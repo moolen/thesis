@@ -16,6 +16,7 @@ body{
 	font-family: "Lato" sans-serif;
 	background-image: url('../img/fabric_of_squares_gray/fabric_of_squares_gray.png');
 	background-repeat: repeat;
+	color: #333;
 }
 
 a{
@@ -35,18 +36,28 @@ a{
 		color: #fafafa;
 		line-height: @top-bar-height;
 		padding: 0 1.667em;
+		.small{
+			font-size: .58em;
+		}
 	}
 }
 
 #content{
 	padding-top: @top-bar-height;
+	width: 100%;
+	max-width: 1300px;
+	margin: 0 auto;
+
+	.container{
+		padding: 1em 0;
+	}
 }
 
 .create-session-button{
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	margin-left: -100px;
+	width: 240px;
+	display: block;
+	text-align: center;
+	margin: 2em auto;
 }
 
 .button{
@@ -62,4 +73,21 @@ a{
 	&:hover{
 		background-color: lighten(@primary-color, 10%);
 	}
+}
+
+.item{
+	width: 21%;
+	display: block;
+	float: left;
+	padding: 0 2%;
+
+	.headline{
+		color: #000;
+		font-size: 1.2em;
+		margin: 2% 0;
+	}
+}
+
+.cf{
+	clear: both;
 }

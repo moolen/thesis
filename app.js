@@ -24,21 +24,15 @@ app.use(auth);
 app.use(routes);
 
 server = app.listen(3000, '0.0.0.0', function () {
-
   var host = server.address().address
   var port = server.address().port
-
-  io = socketio(server);
-
-  io.on('connection', function(){
-    io.emit('hello', 'hello user');
-  });
-
   console.log('Example app listening at http://%s:%s', host, port)
-
 });
 
+io = socketio(server);
+
 module.exports.app = app;
+
 module.exports.getSocket = function(){
   return io;
 };

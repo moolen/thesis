@@ -1,13 +1,11 @@
-var token = require('../lib/token.js');
-
+var token = require('../lib/token.js'),
+	socketNamespace = require('../lib/socket-namespace.js');
 
 var sessionRoute = function(req, res){
 	
 	// fetch session from storage
 	var session = req.session.get(req.params.session),
 		url = req.protocol + '://' + req.get('host');
-
-	console.log(url);
 
 	// case: session exists
 	if(session){
@@ -34,8 +32,8 @@ var sessionRoute = function(req, res){
 };
 
 var createSessionRoute = function(req, res){
-	var socket = require('../app.js').getSocket();
-
+	socket = require('../app.js').getSocket();
+	
 	// create tokens
 	var sessionToken = token(),
 		adminToken = token(32);
@@ -43,15 +41,7 @@ var createSessionRoute = function(req, res){
 	// create session
 	req.session.createSession(sessionToken, adminToken);
 
-	// create new websocket namespace
-	var namespace = socket.of('/' + sessionToken);
-
-	namespace.on('connection', function(){
-		setInterval(function(){
-			namespace.emit('hello', 'Hello user at channel ' + sessionToken);
-		}, 1000)
-		console.log('namespace connected: ' + sessionToken);
-	});
+	socketNamespace.add(socket, sessionToken);
 
 	// set-cookie
 	res.cookie('session-token', sessionToken, { signed: true });
