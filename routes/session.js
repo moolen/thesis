@@ -14,6 +14,7 @@ var sessionRoute = function(req, res){
 			res.render( 'session-admin', {
 				session: session,
 				layout: 'session',
+				isAdmin: req.isAdmin,
 				url: url
 			});
 		// case: no admin
@@ -21,6 +22,7 @@ var sessionRoute = function(req, res){
 			res.render( 'session-user', {
 				session: session,
 				layout: 'session',
+				isAdmin: req.isAdmin,
 				url: url
 			});
 		}
@@ -41,7 +43,7 @@ var createSessionRoute = function(req, res){
 	// create session
 	req.session.createSession(sessionToken, adminToken);
 
-	socketNamespace.add(socket, sessionToken);
+	socketNamespace(socket, sessionToken);
 
 	// set-cookie
 	res.cookie('session-token', sessionToken, { signed: true });

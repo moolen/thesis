@@ -1,5 +1,124 @@
-@import url(http://fonts.googleapis.com/css?family=Raleway:300);
-@import url(http://fonts.googleapis.com/css?family=Lato);
+/* latin */
+@font-face {
+  font-family: 'Raleway';
+  font-style: normal;
+  font-weight: 300;
+  src: local('Raleway Light'), local('Raleway-Light'), url(http://fonts.gstatic.com/s/raleway/v9/-_Ctzj9b56b8RgXW8FArifk_vArhqVIZ0nv9q090hN8.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+/* latin-ext */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v11/UyBMtLsHKBKXelqf4x7VRQ.woff2) format('woff2');
+  unicode-range: U+0100-024F, U+1E00-1EFF, U+20A0-20AB, U+20AD-20CF, U+2C60-2C7F, U+A720-A7FF;
+}
+/* latin */
+@font-face {
+  font-family: 'Lato';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Lato Regular'), local('Lato-Regular'), url(http://fonts.gstatic.com/s/lato/v11/1YwB1sO8YE1Lyjf12WNiUA.woff2) format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+.card {
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.2s;
+  box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.26);
+}
+.card:active {
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+  transition-delay: 0s;
+}
+.paper {
+  background-color: #fff;
+  box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2);
+}
+.raised {
+  position: relative;
+  display: inline-block;
+  width: 300px;
+  height: auto;
+  min-height: 50px;
+  vertical-align: top;
+  background-color: #fff;
+  cursor: pointer;
+  transition: box-shadow 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transition-delay: 0.2s;
+  box-shadow: 0 12px 15px 0 rgba(0, 0, 0, 0.24);
+}
+.raised:active {
+  box-shadow: 0 19px 21px 0 rgba(0, 0, 0, 0.2);
+  transition-delay: 0s;
+}
+#top-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  background: #283036;
+}
+#top-bar .name {
+  margin: 0;
+  padding: 0 1.667em;
+  line-height: 80px;
+  font-family: "Raleway" sans-serif;
+  font-size: 1.667em;
+  font-weight: normal;
+  color: #fafafa;
+}
+#top-bar .name a {
+  color: #fafafa;
+}
+#top-bar .name .small {
+  font-size: .58em;
+}
+#top-menu {
+  position: absolute;
+  top: 80px;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  height: 45px;
+  line-height: 45px;
+  width: 100%;
+  background-color: #3e4a53;
+  color: #fff;
+  cursor: pointer;
+}
+#top-menu li {
+  display: inline-block;
+  padding: 0 1em;
+  transition: background-color 0.05s ease-out;
+  background-color: #3e4a53;
+}
+#top-menu li:hover {
+  background-color: #424f59;
+}
+#top-menu li:active {
+  background-color: #46545f;
+}
+.button {
+  padding: .5em 1em;
+  background-color: #283036;
+  color: #fff;
+  font-size: 1.33em;
+  border: 1px solid #3e4a53;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background-color 0.1s ease-in;
+}
+.button:hover {
+  background-color: #3e4a53;
+}
+.create-session-button {
+  width: 240px;
+  display: block;
+  text-align: center;
+  margin: 2em auto;
+}
 html,
 body {
   height: 100%;
@@ -16,23 +135,14 @@ body {
 a {
   text-decoration: none;
 }
-#top-bar {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  background: #283036;
-}
-#top-bar .name {
-  font-family: "Raleway" sans-serif;
-  font-size: 1.667em;
-  color: #fafafa;
-  line-height: 80px;
-  padding: 0 1.667em;
-}
-#top-bar .name .small {
-  font-size: .58em;
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
 }
 #content {
   padding-top: 80px;
@@ -40,25 +150,9 @@ a {
   max-width: 1300px;
   margin: 0 auto;
 }
+#content.session {
+  padding-top: 125px;
+}
 #content .container {
   padding: 1em 0;
-}
-.create-session-button {
-  width: 240px;
-  display: block;
-  text-align: center;
-  margin: 2em auto;
-}
-.button {
-  padding: .5em 1em;
-  background-color: #283036;
-  color: #fff;
-  font-size: 1.33em;
-  border: 1px solid #3e4a53;
-  border-radius: 3px;
-  cursor: pointer;
-  transition: background-color 0.1s ease-in;
-}
-.button:hover {
-  background-color: #3e4a53;
 }

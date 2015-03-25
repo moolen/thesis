@@ -2,21 +2,26 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>WHITE DESK</title>
+    <title>WHITE DESK | Collaborative Learning</title>
     <link rel="stylesheet" href="/styles/main.css">
     <script>
     window.config = {};
     window.config.room = '{{ session.id }}';
     window.config.url = '{{ url }}';
+    window.config.isAdmin = {{isAdmin}};
     </script>
 </head>
 <body>
 
 	<div id="top-bar">
-		<div class="name">White Desk</div>
+        <h1 class="name"><a href="/">White Desk</a> <span class="small">| Collaborative Learning</span></h1>
 	</div>
- 
- 	<div id="content">
+    
+    {{#if isAdmin}}
+        {{> adminmenu}}
+    {{/if}}
+
+ 	<div id="content" class="session">
 	    {{{body}}}
  	</div>
     <script src="/js/build/bundle.js"></script>

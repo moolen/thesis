@@ -1,0 +1,42 @@
+html, body{
+	height: 100%;
+}
+
+body{
+	padding: 0;
+	margin:0;
+	font-size: 16px;
+	font-family: "Lato" sans-serif;
+	background-image: url('../img/fabric_of_squares_gray/fabric_of_squares_gray.png');
+	background-repeat: repeat;
+	color: #333;
+}
+
+a{
+	text-decoration: none;
+}
+
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  /* Required to make elements draggable in old WebKit */
+  -khtml-user-drag: element;
+  -webkit-user-drag: element;
+}
+
+#content{
+	padding-top: @top-bar-height;
+	width: 100%;
+	max-width: 1300px;
+	margin: 0 auto;
+
+	&.session{
+		padding-top: 125px;
+	}
+
+	.container{
+		padding: 1em 0;
+	}
+}
