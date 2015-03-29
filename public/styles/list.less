@@ -1,0 +1,29 @@
+.question-list{
+	padding: 0;
+	max-width: 205px;
+	list-style: none;
+	li{
+		display: block;
+		width: 100%;
+		padding: .5em 1em;
+		margin: 1em 0;
+		box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.13);
+
+		box-sizing: border-box;
+		background-color: lighten(@primary-color, 80%);
+		border: 1px solid #e5e5e5;
+		border-radius: 3px;
+		cursor: pointer;
+
+		color: #666;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+
+		transition: box-shadow 0.2s ease-in;
+
+		&:hover{
+			box-shadow: 0 7px 10px 0 rgba(0, 0, 0, 0.18);
+		}
+	}
+}

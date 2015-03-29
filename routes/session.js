@@ -9,23 +9,13 @@ var sessionRoute = function(req, res){
 
 	// case: session exists
 	if(session){
-		// case: is admin of session
-		if( true === req.isAdmin ){
-			res.render( 'session-admin', {
-				session: session,
-				layout: 'session',
-				isAdmin: req.isAdmin,
-				url: url
-			});
-		// case: no admin
-		}else{
-			res.render( 'session-user', {
-				session: session,
-				layout: 'session',
-				isAdmin: req.isAdmin,
-				url: url
-			});
-		}
+		
+		res.render( 'session', {
+			session: session,
+			layout: 'session',
+			isAdmin: req.isAdmin,
+			url: url
+		});
 	// case: session does not exist
 	}else{
 		res.redirect('/');
@@ -43,7 +33,7 @@ var createSessionRoute = function(req, res){
 	// create session
 	req.session.createSession(sessionToken, adminToken);
 
-	socketNamespace(socket, sessionToken);
+	socketNamespace.initializeNamespace(socket, sessionToken);
 
 	// set-cookie
 	res.cookie('session-token', sessionToken, { signed: true });
@@ -56,4 +46,5 @@ var createSessionRoute = function(req, res){
 module.exports = function(router){
 	router.get('/create', createSessionRoute);
 	router.get('/:session', sessionRoute);
+	router.get('/:session/*', sessionRoute);
 };

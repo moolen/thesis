@@ -1,0 +1,17 @@
+<div id="create-question">
+	<h3>Create Question</h3>
+	
+	<div class="form-wrap">
+		<label for="question">Question:</label><input type="text" id="question" data-hook="question" placeholder="Your question">
+	</div>
+	<div class="form-wrap">
+		<label for="question-type">Type</label><select name="question-type" data-hook="type" id="question-type">
+			<option selected value="mc">multiple choice</option>
+			<option value="bool">true / false</option>
+			<option value="sa">short answer</option>
+			<option value="go">group organization</option>
+		</select>
+	</div>
+	
+	<button data-trigger="create" class="button white save-question">create</button>
+</div>

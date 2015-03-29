@@ -1,0 +1,14 @@
+<div id="show-question">
+	<h3>Show Question</h3>
+	
+	<div class="form-wrap">
+		<label for="show-question-model-question">Question:</label><input disabled type="text" id="show-question-model-question" data-hook="question" value="why it this">
+	</div>
+
+	{{#if config.isAdmin }}
+		<h3>YO ADMIN</h3>
+	{{else}}
+		<h3>YO USER</h3>
+	{{/if}}
+
+</div>

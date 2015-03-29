@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>{{i18n.NAME}} | {{i18n.TITLE}}</title>
+    <link rel="stylesheet" href="/styles/main.css">
+    <script>
+    window.config = {};
+    window.config.room = '{{ session.id }}';
+    window.config.url = '{{ url }}';
+    window.config.isAdmin = {{isAdmin}};
+    </script>
+</head>
+<body>
+
+	<div id="top-bar">
+        <h1 class="name"><a href="/">{{i18n.NAME}}</a> <span class="small">| {{i18n.TITLE}}</span></h1>
+	</div>
+    <span class="user-count-view"></span>
+ 	<div id="content" class="session">
+	    {{{body}}}
+        <div id="app">
+        
+            <div id="left-nav">
+                {{#if isAdmin}}
+                <button class="button create-question">quick Question</button>
+                {{/if}}
+                <div id="question-list-view"></div>
+            </div>
+        
+            <div id="main">
+                <div id="create-question"></div>            
+                <div id="show-question"></div>
+            </div>
+
+            <div id="right-nav">
+                <div id="activity-feed">
+                    <h3>Activity feed</h3>
+                    <ul class="activity-feed"></ul>
+                </div>            
+            </div>
+            <div class="cf"></div>
+        
+        </div>
+ 	</div>
+    <script src="/js/build/bundle.js"></script>
+</body>
+</html>
