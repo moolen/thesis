@@ -6,12 +6,22 @@
 	</div>
 	<div class="form-wrap">
 		<label for="question-type">Type</label><select name="question-type" data-hook="type" id="question-type">
-			<option selected value="mc">multiple choice</option>
+			<option selected value=""></option>
+			<option value="mc">multiple choice</option>
 			<option value="bool">true / false</option>
 			<option value="sa">short answer</option>
 			<option value="go">group organization</option>
 		</select>
 	</div>
-	
+
+	{{#is model.type  'mc'}}
+		<div class="form-wrap">
+			{{#each model.acceptedOptions}}
+				<label for="">option:</label><input type="text" class="mc-answer" value="{{value}}"placeholder="yes, but actually not.">
+			{{/each}}
+			
+			<button class="button white add-option">add option</button>
+		</div>
+	{{/is}}
 	<button data-trigger="create" class="button white save-question">create</button>
 </div>

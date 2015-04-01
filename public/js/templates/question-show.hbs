@@ -6,9 +6,59 @@
 	</div>
 
 	{{#if config.isAdmin }}
-		<h3>YO ADMIN</h3>
+		
+		{{#is this.model.type 'mc'}}
+			<h3>MC ADMIN</h3>
+		{{/is}}
+
+		{{#is this.model.type 'bool'}}
+			<ul>
+				{{#each model.preparedAnswers}}
+					<li class="answer-block">{{key}} ({{value}})<span class="answer-percent">{{percent}}%</span></li>
+				{{/each}}
+			</ul>
+		{{/is}}
+
+		{{#is this.model.type 'sa'}}
+			<h3>sa ADMIN</h3>
+		{{/is}}
+
+		{{#is this.model.type 'go'}}
+			<h3>go ADMIN</h3>
+		{{/is}}
+
 	{{else}}
-		<h3>YO USER</h3>
+
+		{{#is this.model.hasAnswered false}}
+
+			{{#is this.model.type 'mc'}}
+				<ul>
+					{{#each model.acceptedOptions}}
+						<li class="mc-answer">{{value}}</li>
+					{{/each}}
+				</ul>
+			{{/is}}
+
+			{{#is this.model.type 'bool'}}
+				<input type="radio" name="question" id="question-bool-true" value="true"> <label for="question-bool-true">True</label>
+				<input type="radio" name="question" id="question-bool-false" value="false"><label for="question-bool-false">False</label>
+			{{/is}}
+
+			{{#is this.model.type 'sa'}}
+				<h3>sa ADMIN</h3>
+			{{/is}}
+
+			{{#is this.model.type 'go'}}
+				<h3>go ADMIN</h3>
+			{{/is}}
+
+			<button class="button white submit-answer">submit</button>
+
+		{{else}}
+			<h3>you already participated</h3>
+		{{/is}}
+		
+
 	{{/if}}
 
 </div>

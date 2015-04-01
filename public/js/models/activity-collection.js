@@ -4,6 +4,7 @@ var _ = require('lodash'),
 
 module.exports = BaseCollection.extend({
 	model: QuestionModel,
+	comparator: 'createdAt',
 	namespace: 'activities',
 	initialize: function(models, options){
 		this.socket = options.socket;

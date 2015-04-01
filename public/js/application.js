@@ -86,6 +86,9 @@ var Application = function(){
 		this.registerBindings();
 		this.socket.on('server:ready', this.onServerReady.bind(this));
 
+		this.config.adminToken = cookie.read('admin-token');
+		this.config.userToken = cookie.read('user-token');
+
 		this.socket.emit('client:ready', {
 			session: cookie.read('session-token'),
 			admin: cookie.read('admin-token')

@@ -10,6 +10,13 @@ var sessionRoute = function(req, res){
 	// case: session exists
 	if(session){
 		
+		if( !req.isAdmin && !req.signedCookies['user-token'] ){
+			res.cookie('user-token', token(24), {
+				signed: true,
+				path: '/' + req.params.session
+			});
+		}
+
 		res.render( 'session', {
 			session: session,
 			layout: 'session',

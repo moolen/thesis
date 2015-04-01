@@ -13,41 +13,51 @@ var CreateQuestion = BaseView.extend({
 	template: handlebars.compile(template),
 
 	bindings: {
-		'model.question': {
-			type: 'value',
-			hook: 'question'
-		},
 		'model.type': {
 			type: 'value',
 			hook: 'type'
 		},
 	},
 	events: {
+		'change #question-type': 'updateQuestionType',
+		'click .add-option': 'addOption',
 		'click [data-trigger="create"]': 'save'
 	},
-	initialize: function(options){},
+	initialize: function(options){
+		this.model = new QuestionModel();
+		this.model.on('change', this.render.bind(this));
+	},
+
+	updateQuestionType: function(){
+		this.model.type = $(this.el).find('[data-hook="type"]').val();
+	},
+
+	addOption: function(){
+		this.model.incrementAcceptedOptions();
+		this.render();
+	},
 
 	save: function(){
 		var question = $(this.el).find('[data-hook="question"]').val();
+		// @todo find answers, remove duplicates and set em on the model
+		var acceptedOptions = $(this.el).find('.mc-answer').val();
 		var type = $(this.el).find('[data-hook="type"]').val();
 
 		this.clearErrors();
 
 		
-		var model = new QuestionModel();
-
 		if(type)
-			model.type = type;
+			this.model.type = type;
 
 		if(question)
-			model.question = question;
+			this.model.question = question;
 
-		if( model.isValid() ){
-			this.collection.addModel( model );
+		if( this.model.isValid() ){
+			this.collection.addModel( this.model );
 			events.trigger( events.NEW_QUESTION );
-			Router.redirectTo('question/' + model.id);
+			Router.redirectTo('question/' + this.model.id);
 		}else{
-			for( var key in model.validationError){
+			for( var key in this.model.validationError){
 				this.queryByHook(key)
 					.classList.add('error');
 			}

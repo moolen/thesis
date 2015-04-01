@@ -8,11 +8,15 @@ module.exports = BaseCollection.extend({
 	
 	namespace: 'questions',
 
-	comparator: '-createdAt',
+	comparator: 'createdAt',
 	
 	initialize: function(models, options){
+		var self = this;
 		this.socket = options.socket;
-		this.socket.on( this.namespace + ':change', this.set.bind(this));
+		this.socket.on( this.namespace + ':change', function( collection ){
+			self.set(collection);
+			self.sort();
+		});
 		
 	},
 

@@ -3,16 +3,16 @@ var $ = require('jquery.js'),
 	Router = require('lib/router.js'),
 	QuestionModel = require('models/question.js'),
 	BaseView = require('ampersand-view'),
-	handlebars = require('handlebars.js'),
+	handlebars = require('lib/hbs-helper.js'),
 	template = require('templates/question-show.hbs');
-
-handlebars.registerHelper('log', function(foo){
-	console.log(foo);
-});
 
 var ShowQuestion = BaseView.extend({
 
 	autoRender: true,
+
+	events: {
+		'click .submit-answer': 'submitAnswer'
+	},
 
 	template: handlebars.compile(template),
 
@@ -24,7 +24,16 @@ var ShowQuestion = BaseView.extend({
 	},
 	initialize: function(options){
 		this.config = options.config;
+		this.model.on('change', this.render.bind(this));
 		Router.navigate('question/' + this.model.id);
+	},
+
+	submitAnswer: function(){
+		var $el = $('input[name="question"]:checked');
+		if( $el.length > 0 ){
+			this.model.submitted = true;
+			this.model.submitAnswer( $el.val() );
+		}
 	}
 });
 
