@@ -1,7 +1,7 @@
 var	io = require('io.js'),
+	App = require('ampersand-app'),
 	$ = require('jquery.js'),
 	_ = require('lodash'),
-	events = require('lib/events.js'),
 	cookie = require('lib/cookie.js'),
 	Router = require('lib/router.js'),
 	ViewSwitcher = require('ampersand-view-switcher'),
@@ -13,76 +13,131 @@ var	io = require('io.js'),
 	ActivityCollection = require('models/activity-collection.js'),
 	UsercountView = require('views/user-count.js');
 
-var Application = function(){
-	
-	var self = this;
+var Application = App.extend({
 
 	/**
 	 * config
 	 * - copy the window.config global
 	 */
-	this.config = _.extend(window.config);
+	config: _.extend(window.config),
 
 	/**
 	 * events
-	 * - our application-level eventEmitter instance
-	 * @type {EventEmitter}
+	 * - our application-level events hash
+	 * @type {object}
 	 */
-	this.events = events;
+	events: {
+		NEW_QUESTION: 'question:created',
+		CREATE_QUESTION: 'question:create',
+		SHOW_QUESTION: 'question:show',
+	},
 
 	/**
 	 * socket
 	 * - 
 	 * @type {Socket.io websocket connection}
 	 */
-	this.socket = io.connect( this.config.url + '/' + this.config.room);
+	socket: null,
 
 	/**
 	 * MODELS
 	 */
-	this.models = {};
-	this.models.usercount = new UsercountModel({count: 0}, { socket: this.socket });
+	models: {
+
+		/**
+		 * usercount model
+		 * - populated @server:ready
+		 * @type {UsercountModel}
+		 */
+		usercount: null,
+
+	},
 
 	/**
 	 * COLLECTIONS
 	 */
-	this.collections = {};
+	collections: {
 
-	this.collections.questionCollection = new QuestionCollection(
-		[], { socket: this.socket }
-	);
-	
-	this.collections.activityCollection = new ActivityCollection(
-		[], { socket: this.socket }
-	);
+		/**
+		 * questioCollection
+		 * - populated @server:ready
+		 * @type {QuestionCollection}
+		 */
+		questionCollection: null,
+		
+		/**
+		 * Activity Collection
+		 * - populated @server:ready
+		 * @type {ActivityCollection}
+		 */
+		activityCollection: null
+	},
 
 	/**
 	 * VIEWS
 	 * @type {Object}
 	 */
-	this.views = {};
+	views: {
+		/**
+		 * questionList view
+		 * @type {QuestionList}
+		 */
+		questionList: null,
+
+		/**
+		 * usercount view
+		 * @type {UsercountView}
+		 */
+		usercountView: null,
+	},
 	
 	/**
 	 * viewSwitcher
 	 * - toggles showQuestion | createQuestion views
 	 */
-	this.viewSwitcher = new ViewSwitcher( $('#main')[0] );
+	viewSwitcher: new ViewSwitcher( $('#main')[0] ),
 
-	this.views.questionList = new QuestionList({
-		el: $('#question-list-view')[0],
-		config: self.config,
-		collection: this.collections.questionCollection
-	});
-	
-	this.views.usercountView = new UsercountView({
-		el: $('.user-count-view')[0],
-		config: self.config,
-		model: this.models.usercount
-	});
+	/**
+	 * our Application Router
+	 * @type {ampersand-router}
+	 */
+	router: new Router,
 
-	this.router = Router;
+	/**
+	 * initialize:
+	 * - registers DOM bindings,
+	 * - registers socket callback 'server:ready'
+	 * - read & set admin- & usertoken
+	 * - emit socket event 'client:ready'
+	 * 
+	 * @return {void}
+	 */
+	initialize: function(){
 
-	this.initialize = function(){
+		this.socket = io.connect( this.config.url + '/' + this.config.room);
+		
+		this.models.usercount = new UsercountModel({count: 0}, { socket: this.socket });
+		
+		this.collections.questionCollection = new QuestionCollection(
+			[], { socket: this.socket }
+		);
+
+		this.collections.activityCollection = new ActivityCollection(
+			[], { socket: this.socket }
+		);
+
+		this.views.questionList = new QuestionList({
+			el: $('#question-list-view')[0],
+			config: this.config,
+			collection: this.collections.questionCollection
+		});
+
+		this.views.usercountView = new UsercountView({
+			el: $('.user-count-view')[0],
+			config: this.config,
+			model: this.models.usercount
+		});
+
 		this.registerBindings();
 		this.socket.on('server:ready', this.onServerReady.bind(this));
 
@@ -93,9 +148,21 @@ var Application = function(){
 			session: cookie.read('session-token'),
 			admin: cookie.read('admin-token')
 		});
-	};
+	},
 
-	this.onServerReady = function( initialData ){
+	/**
+	 * is called when the server tells us he is ready
+	 * this is the _last_ part of the initialization process
+	 *
+	 * - sets the collection data [questions, activity]
+	 * - sets the usercount
+	 * - renders the question list
+	 * - starts the router history
+	 * 
+	 * @param  {object} initialData [initial data: questions, activity, usercount]
+	 * @return {void}
+	 */
+	onServerReady: function( initialData ){
 		this.collections.questionCollection.set( initialData.questions, { silent: true } );
 		this.collections.activityCollection.set( initialData.activities, { silent: true } );
 		this.models.usercount.set( initialData.usercount, { silent: true } );
@@ -106,34 +173,65 @@ var Application = function(){
 			pushState: true,
 			root: this.config.room
 		});
-	};
+	},
 
-	this.registerBindings = function(){
-		$('.create-question').click(function(){
-			if( self.config.isAdmin ){
-				self.viewSwitcher.set( new CreateQuestionView({
-					el: $('#create-question')[0],
-					collection: self.collections.questionCollection
-				}));
-			}
-		});
+	/**
+	 * registers application-level bindings
+	 * for handling views
+	 * see @createQuestionView and @showQuestionView for actual implementation
+	 * 
+	 * @return void
+	 */
+	registerBindings: function(){
+		// create question view
+		// - via click
+		// - via eventEmitter / Router
+		$('.create-question').click(this.createQuestionView.bind(this));
+		this.on(this.events.CREATE_QUESTION, this.createQuestionView.bind(this));
+		
+		// show question view
+		// - via eventEmitter / Router
+		this.on(this.events.SHOW_QUESTION, this.showQuestionView.bind(this));
+	},
 
-		this.events.on(events.SHOW_QUESTION, function(id){
-			var model = self.collections.questionCollection.get(id);
-			if( model ){
-				return self.viewSwitcher.set( new ShowQuestionView({
-					model: model,
-					config: self.config,
-					el: $('#show-question')[0]
-				}));
-			}
+	/**
+	 * createQuestionView:
+	 * tells the viewSwitcher to view the <CreateQuestionView>
+	 * 
+	 * @return void
+	 */
+	createQuestionView: function(){
+		if( this.config.isAdmin ){
+			return this.viewSwitcher.set( new CreateQuestionView({
+				el: $('#create-question')[0],
+				collection: this.collections.questionCollection
+			}));
+		}
+		// fallback: root
+		this.router.redirectTo('/');
+	},
 
-			self.router.redirectTo('/');
-		});
-	};
+	/**
+	 * showQuestionView
+	 * pull the question from the collection
+	 * and display it in a new view
+	 * 
+	 * @param  {UUID/Hash} id [the id of the Question]
+	 * @return {void}
+	 */
+	showQuestionView: function(id){
+		var model = this.collections.questionCollection.get(id);
+		if( model ){
+			return this.viewSwitcher.set( new ShowQuestionView({
+				model: model,
+				config: this.config,
+				el: $('#show-question')[0]
+			}));
+		}
+		// fallback: root
+		this.router.redirectTo('/');
+	}
 
-	this.initialize();
+});
 
-};
-
-module.exports = new Application();
+module.exports = Application;

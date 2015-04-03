@@ -1,6 +1,6 @@
 var $ = require('jquery.js'),
-	events = require('lib/events.js'),
-	Router = require('lib/router.js'),
+	_ = require('lodash'),
+	app = require('ampersand-app'),
 	QuestionModel = require('models/question.js'),
 	BaseView = require('ampersand-view'),
 	handlebars = require('handlebars.js'),
@@ -16,23 +16,45 @@ var CreateQuestion = BaseView.extend({
 		'model.type': {
 			type: 'value',
 			hook: 'type'
-		},
+		}
 	},
+
 	events: {
 		'change #question-type': 'updateQuestionType',
 		'click .add-option': 'addOption',
 		'click [data-trigger="create"]': 'save'
 	},
+
 	initialize: function(options){
 		this.model = new QuestionModel();
 		this.model.on('change', this.render.bind(this));
+		app.router.navigate('question/new');
 	},
 
 	updateQuestionType: function(){
-		this.model.type = $(this.el).find('[data-hook="type"]').val();
+		var val = $(this.el).find('[data-hook="type"]').val(),
+			question = $(this.el).find('[data-hook="question"]').val();
+		
+		this.model.question = question;
+		this.model.type = val;
+	},
+
+	getAcceptedOptions: function(){
+		var options = [];
+		
+		_.each($('.mc-answer'), function(node){
+			options.push({
+				value: $(node).val()
+			});
+		});
+
+		return _.filter(options, function(el){ return el.value !== "" });
 	},
 
 	addOption: function(){
+
+		this.model.acceptedOptions = this.getAcceptedOptions();
+
 		this.model.incrementAcceptedOptions();
 		this.render();
 	},
@@ -40,11 +62,10 @@ var CreateQuestion = BaseView.extend({
 	save: function(){
 		var question = $(this.el).find('[data-hook="question"]').val();
 		// @todo find answers, remove duplicates and set em on the model
-		var acceptedOptions = $(this.el).find('.mc-answer').val();
+		var acceptedOptions = this.getAcceptedOptions();
 		var type = $(this.el).find('[data-hook="type"]').val();
 
 		this.clearErrors();
-
 		
 		if(type)
 			this.model.type = type;
@@ -52,10 +73,13 @@ var CreateQuestion = BaseView.extend({
 		if(question)
 			this.model.question = question;
 
+		if(acceptedOptions)
+			this.model.acceptedOptions = acceptedOptions;
+
 		if( this.model.isValid() ){
 			this.collection.addModel( this.model );
-			events.trigger( events.NEW_QUESTION );
-			Router.redirectTo('question/' + this.model.id);
+			app.trigger( app.events.NEW_QUESTION );
+			app.router.redirectTo('question/' + this.model.id);
 		}else{
 			for( var key in this.model.validationError){
 				this.queryByHook(key)

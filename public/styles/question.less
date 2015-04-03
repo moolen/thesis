@@ -1,0 +1,58 @@
+@min-width-switch: 20;
+@answer-height: 1em;
+@answer-padding: .33em;
+
+.answer-block{
+	position: relative;
+	list-style: none;
+	height: @answer-height;
+	padding: @answer-padding;
+	margin: .667em 0;
+	.generate-upper-answer-percent();
+	.generate-lower-answer-percent();
+
+	.answer-bar{
+		position: absolute;
+		top:0;
+		left:0;
+		bottom:0;
+		min-width: @min-width-switch * 1%;
+		padding: @answer-padding 0;
+
+		background: @primary-color;
+		color: #fff;
+		line-height: @answer-height;
+	}
+	.answer-value{
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		padding: @answer-padding 0;
+		line-height: @answer-height;
+
+		color: #fff;
+
+		text-align: center;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+	}
+}
+
+.generate-upper-answer-percent(@i: 100) when (@i > @min-width-switch){
+	.p-@{i} {
+		width: (@i * 1%);
+	}
+	.generate-upper-answer-percent(@i - 1);
+}
+
+.generate-lower-answer-percent(@i: @min-width-switch) when (@i > 0){
+	.p-@{i} {
+		&.answer-value{
+			margin-left: @min-width-switch + 1 * 1%;
+			color: @primary-color;
+		}
+	}
+	.generate-lower-answer-percent(@i - 1);
+}

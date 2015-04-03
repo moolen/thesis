@@ -1,7 +1,5 @@
 var $ = require('jquery.js'),
-	events = require('lib/events.js'),
-	Router = require('lib/router.js'),
-	QuestionModel = require('models/question.js'),
+	app = require('ampersand-app'),
 	BaseView = require('ampersand-view'),
 	handlebars = require('lib/hbs-helper.js'),
 	template = require('templates/question-show.hbs');
@@ -25,7 +23,7 @@ var ShowQuestion = BaseView.extend({
 	initialize: function(options){
 		this.config = options.config;
 		this.model.on('change', this.render.bind(this));
-		Router.navigate('question/' + this.model.id);
+		app.router.navigate('question/' + this.model.id);
 	},
 
 	submitAnswer: function(){

@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "ampersand-app": "^1.0.3",
     "ampersand-collection": "^1.4.4",
     "ampersand-events": "^1.1.0",
     "ampersand-model": "^5.0.0",

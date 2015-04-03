@@ -8,13 +8,23 @@
 	{{#if config.isAdmin }}
 		
 		{{#is this.model.type 'mc'}}
-			<h3>MC ADMIN</h3>
+			<ul>
+				{{#each model.preparedAnswers}}
+					<li class="answer-block">
+						<span class="answer-bar p-{{percent}}"></span>
+						<span class="answer-value p-{{percent}}">{{key}}: {{percent}}%</span>
+					</li>
+				{{/each}}
+			</ul>
 		{{/is}}
 
 		{{#is this.model.type 'bool'}}
 			<ul>
 				{{#each model.preparedAnswers}}
-					<li class="answer-block">{{key}} ({{value}})<span class="answer-percent">{{percent}}%</span></li>
+					<li class="answer-block">
+						<span class="answer-bar p-{{percent}}"></span>
+						<span class="answer-value p-{{percent}}">{{key}}: {{percent}}%</span>
+					</li>
 				{{/each}}
 			</ul>
 		{{/is}}
@@ -32,11 +42,11 @@
 		{{#is this.model.hasAnswered false}}
 
 			{{#is this.model.type 'mc'}}
-				<ul>
-					{{#each model.acceptedOptions}}
-						<li class="mc-answer">{{value}}</li>
-					{{/each}}
-				</ul>
+				{{#each model.acceptedOptions}}
+					<div class="form-wrap mc">
+						<input type="radio"  name="question" id="mc-answer-{{value}}" value="{{value}}" class="mc-answer"><label for="mc-answer-{{value}}">{{value}}</label>							
+					</div>
+				{{/each}}
 			{{/is}}
 
 			{{#is this.model.type 'bool'}}

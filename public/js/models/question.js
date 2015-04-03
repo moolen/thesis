@@ -1,9 +1,10 @@
 var State = require('ampersand-state'),
+	app = require('ampersand-app'),
 	cookie = require('lib/cookie.js'),
 	uuid = require('lib/uuid.js'),
 	_ = require('lodash');
 
-module.exports = State.extend({
+var QuestionModel = State.extend({
 	props: {
 		id: {
 			type: 'string'
@@ -35,6 +36,10 @@ module.exports = State.extend({
 		submitted: {
 			type: 'boolean',
 			default: false
+		},
+		highlight: {
+			type: 'string',
+			default: ''
 		}
 	},
 
@@ -53,7 +58,7 @@ module.exports = State.extend({
 						return{
 							key: key,
 							value: value,
-							percent: Math.floor(value / total * 100)
+							percent: Math.round(value / total * 100)
 						};
 					}).value();
 			}
@@ -67,7 +72,6 @@ module.exports = State.extend({
 	},
 
 	initialize: function(props){
-		
 		props = props || {};
 
 		if(!props.createdAt)
@@ -110,9 +114,11 @@ module.exports = State.extend({
 		
 		// emit answer
 		app.socket.emit('answer:submit', {
-			user: window.app.config.userToken,
+			user: app.config.userToken,
 			question: this.id,
 			answer: answer
 		});
 	},
 });
+
+module.exports = QuestionModel;

@@ -151,10 +151,17 @@
   box-sizing: border-box;
   font-size: 1em;
 }
+.add-option {
+  font-size: .667em;
+}
 .save-question {
   font-size: 1em;
   padding: .5em 1.667em;
-  margin: 1em 0 1em 1em;
+  margin: 1em 0 1em 0;
+}
+.submit-answer {
+  font-size: 1em;
+  margin: 1em 0;
 }
 html,
 body {
@@ -219,6 +226,12 @@ a {
 .form-wrap {
   padding: 1em 0;
 }
+.form-wrap .row-wrap {
+  padding: .33em 0;
+}
+.form-wrap.mc {
+  padding: 0;
+}
 label {
   display: inline-block;
   width: 20%;
@@ -264,7 +277,7 @@ select:focus {
   margin: 1em 0;
   box-shadow: 0 4px 7px 0 rgba(0, 0, 0, 0.13);
   box-sizing: border-box;
-  background-color: #fafbfc;
+  background-color: #fff;
   border: 1px solid #e5e5e5;
   border-radius: 3px;
   cursor: pointer;
@@ -272,8 +285,366 @@ select:focus {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
-  transition: box-shadow 0.2s ease-in;
+  transition: box-shadow 0.2s ease-out;
+}
+.question-list li.active {
+  background-color: #283036;
+  color: #fff;
 }
 .question-list li:hover {
   box-shadow: 0 7px 10px 0 rgba(0, 0, 0, 0.18);
+}
+.question-list li:active {
+  box-shadow: 0 2px 4px 0 rgba(1, 0, 0, 0.13);
+}
+.answer-block {
+  position: relative;
+  list-style: none;
+  height: 1em;
+  padding: 0.33em;
+  margin: .667em 0;
+}
+.answer-block .p-100 {
+  width: 100%;
+}
+.answer-block .p-99 {
+  width: 99%;
+}
+.answer-block .p-98 {
+  width: 98%;
+}
+.answer-block .p-97 {
+  width: 97%;
+}
+.answer-block .p-96 {
+  width: 96%;
+}
+.answer-block .p-95 {
+  width: 95%;
+}
+.answer-block .p-94 {
+  width: 94%;
+}
+.answer-block .p-93 {
+  width: 93%;
+}
+.answer-block .p-92 {
+  width: 92%;
+}
+.answer-block .p-91 {
+  width: 91%;
+}
+.answer-block .p-90 {
+  width: 90%;
+}
+.answer-block .p-89 {
+  width: 89%;
+}
+.answer-block .p-88 {
+  width: 88%;
+}
+.answer-block .p-87 {
+  width: 87%;
+}
+.answer-block .p-86 {
+  width: 86%;
+}
+.answer-block .p-85 {
+  width: 85%;
+}
+.answer-block .p-84 {
+  width: 84%;
+}
+.answer-block .p-83 {
+  width: 83%;
+}
+.answer-block .p-82 {
+  width: 82%;
+}
+.answer-block .p-81 {
+  width: 81%;
+}
+.answer-block .p-80 {
+  width: 80%;
+}
+.answer-block .p-79 {
+  width: 79%;
+}
+.answer-block .p-78 {
+  width: 78%;
+}
+.answer-block .p-77 {
+  width: 77%;
+}
+.answer-block .p-76 {
+  width: 76%;
+}
+.answer-block .p-75 {
+  width: 75%;
+}
+.answer-block .p-74 {
+  width: 74%;
+}
+.answer-block .p-73 {
+  width: 73%;
+}
+.answer-block .p-72 {
+  width: 72%;
+}
+.answer-block .p-71 {
+  width: 71%;
+}
+.answer-block .p-70 {
+  width: 70%;
+}
+.answer-block .p-69 {
+  width: 69%;
+}
+.answer-block .p-68 {
+  width: 68%;
+}
+.answer-block .p-67 {
+  width: 67%;
+}
+.answer-block .p-66 {
+  width: 66%;
+}
+.answer-block .p-65 {
+  width: 65%;
+}
+.answer-block .p-64 {
+  width: 64%;
+}
+.answer-block .p-63 {
+  width: 63%;
+}
+.answer-block .p-62 {
+  width: 62%;
+}
+.answer-block .p-61 {
+  width: 61%;
+}
+.answer-block .p-60 {
+  width: 60%;
+}
+.answer-block .p-59 {
+  width: 59%;
+}
+.answer-block .p-58 {
+  width: 58%;
+}
+.answer-block .p-57 {
+  width: 57%;
+}
+.answer-block .p-56 {
+  width: 56%;
+}
+.answer-block .p-55 {
+  width: 55%;
+}
+.answer-block .p-54 {
+  width: 54%;
+}
+.answer-block .p-53 {
+  width: 53%;
+}
+.answer-block .p-52 {
+  width: 52%;
+}
+.answer-block .p-51 {
+  width: 51%;
+}
+.answer-block .p-50 {
+  width: 50%;
+}
+.answer-block .p-49 {
+  width: 49%;
+}
+.answer-block .p-48 {
+  width: 48%;
+}
+.answer-block .p-47 {
+  width: 47%;
+}
+.answer-block .p-46 {
+  width: 46%;
+}
+.answer-block .p-45 {
+  width: 45%;
+}
+.answer-block .p-44 {
+  width: 44%;
+}
+.answer-block .p-43 {
+  width: 43%;
+}
+.answer-block .p-42 {
+  width: 42%;
+}
+.answer-block .p-41 {
+  width: 41%;
+}
+.answer-block .p-40 {
+  width: 40%;
+}
+.answer-block .p-39 {
+  width: 39%;
+}
+.answer-block .p-38 {
+  width: 38%;
+}
+.answer-block .p-37 {
+  width: 37%;
+}
+.answer-block .p-36 {
+  width: 36%;
+}
+.answer-block .p-35 {
+  width: 35%;
+}
+.answer-block .p-34 {
+  width: 34%;
+}
+.answer-block .p-33 {
+  width: 33%;
+}
+.answer-block .p-32 {
+  width: 32%;
+}
+.answer-block .p-31 {
+  width: 31%;
+}
+.answer-block .p-30 {
+  width: 30%;
+}
+.answer-block .p-29 {
+  width: 29%;
+}
+.answer-block .p-28 {
+  width: 28%;
+}
+.answer-block .p-27 {
+  width: 27%;
+}
+.answer-block .p-26 {
+  width: 26%;
+}
+.answer-block .p-25 {
+  width: 25%;
+}
+.answer-block .p-24 {
+  width: 24%;
+}
+.answer-block .p-23 {
+  width: 23%;
+}
+.answer-block .p-22 {
+  width: 22%;
+}
+.answer-block .p-21 {
+  width: 21%;
+}
+.answer-block .p-20.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-19.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-18.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-17.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-16.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-15.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-14.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-13.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-12.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-11.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-10.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-9.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-8.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-7.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-6.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-5.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-4.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-3.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-2.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .p-1.answer-value {
+  margin-left: 21%;
+  color: #283036;
+}
+.answer-block .answer-bar {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  min-width: 20%;
+  padding: 0.33em 0;
+  background: #283036;
+  color: #fff;
+  line-height: 1em;
+}
+.answer-block .answer-value {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  padding: 0.33em 0;
+  line-height: 1em;
+  color: #fff;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }

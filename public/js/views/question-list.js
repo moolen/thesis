@@ -1,5 +1,4 @@
 var $ = require('jquery.js'),
-	events = require('lib/events.js'),
 	ListItem = require('views/question-list-item.js'),
 	BaseView = require('ampersand-view'),
 	handlebars = require('handlebars.js'),
@@ -18,6 +17,10 @@ var QuestionList = BaseView.extend({
 			'.question-list'
 		);
 		return this;
+	},
+
+	removeHighlight: function(){
+		this.collection.removeHighlight();
 	}
 });
 

@@ -20,6 +20,12 @@ module.exports = BaseCollection.extend({
 		
 	},
 
+	removeHighlight: function(){
+		_.each(this.models, function(model){
+			model.highlight = '';
+		});
+	},
+
 	addModel: function( model ){
 		this.socket.emit(this.namespace + ':add', model);
 		this.add(model);

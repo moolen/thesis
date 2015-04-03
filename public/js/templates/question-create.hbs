@@ -2,7 +2,7 @@
 	<h3>Create Question</h3>
 	
 	<div class="form-wrap">
-		<label for="question">Question:</label><input type="text" id="question" data-hook="question" placeholder="Your question">
+		<label for="question">Question:</label><input type="text" id="question" data-hook="question" value="{{model.question}}" placeholder="Your question">
 	</div>
 	<div class="form-wrap">
 		<label for="question-type">Type</label><select name="question-type" data-hook="type" id="question-type">
@@ -17,10 +17,12 @@
 	{{#is model.type  'mc'}}
 		<div class="form-wrap">
 			{{#each model.acceptedOptions}}
-				<label for="">option:</label><input type="text" class="mc-answer" value="{{value}}"placeholder="yes, but actually not.">
+				<div class="row-wrap">
+					<label for="">option:</label><input type="text" class="mc-answer" value="{{value}}"placeholder="yes, but actually not.">
+				</div>
 			{{/each}}
 			
-			<button class="button white add-option">add option</button>
+			<button class="button add-option">add option</button>
 		</div>
 	{{/is}}
 	<button data-trigger="create" class="button white save-question">create</button>
