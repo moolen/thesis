@@ -7,7 +7,9 @@
 
 	{{#if config.isAdmin }}
 		
-		{{#is this.model.type 'mc'}}
+		<h3>Answers:</h3>
+
+		{{#isCheckbox this.model.type}}
 			<ul>
 				{{#each model.preparedAnswers}}
 					<li class="answer-block">
@@ -16,22 +18,18 @@
 					</li>
 				{{/each}}
 			</ul>
-		{{/is}}
+		{{/isCheckbox}}
 
-		{{#is this.model.type 'bool'}}
+		{{#isShortAnswer this.model.type}}
 			<ul>
-				{{#each model.preparedAnswers}}
-					<li class="answer-block">
-						<span class="answer-bar p-{{percent}}"></span>
-						<span class="answer-value p-{{percent}}">{{key}}: {{percent}}%</span>
+				{{#each model.answers}}
+					<li class="answer-block" data-id="{{id}}">
+						<span class="answer-bar p-100"></span>
+						<span class="answer-value p-100">{{value}}<span class="fa fa-remove remove-answer"></span></span>
 					</li>
 				{{/each}}
 			</ul>
-		{{/is}}
-
-		{{#is this.model.type 'sa'}}
-			<h3>sa ADMIN</h3>
-		{{/is}}
+		{{/isShortAnswer}}
 
 		{{#is this.model.type 'go'}}
 			<h3>go ADMIN</h3>
@@ -55,7 +53,9 @@
 			{{/is}}
 
 			{{#is this.model.type 'sa'}}
-				<h3>sa ADMIN</h3>
+				<div class="form-wrap">
+					<label for="question-sa">Your answer:</label><input id="question-sa" name="question" type="text" >
+				</div>
 			{{/is}}
 
 			{{#is this.model.type 'go'}}

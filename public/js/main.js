@@ -5,3 +5,5 @@ var $ = require('./vendor/jquery.js'),
 	livereload = require('livereload-js');
 
 Application.initialize();
+
+window.app = Application;

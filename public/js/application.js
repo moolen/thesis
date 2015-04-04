@@ -222,6 +222,9 @@ var Application = App.extend({
 	showQuestionView: function(id){
 		var model = this.collections.questionCollection.get(id);
 		if( model ){
+			// set highlighting
+			model.highlight = 'active';
+			// set view
 			return this.viewSwitcher.set( new ShowQuestionView({
 				model: model,
 				config: this.config,

@@ -6,30 +6,17 @@ var State = require('ampersand-state'),
 
 var QuestionModel = State.extend({
 	props: {
-		id: {
-			type: 'string'
-		},
-		question: {
-			type: 'string',
-			default: ''
-		},
-		type: {
-			type: 'string',
-			default: ''
-		},
-		createdAt: {
-			type: 'date'
-		},
-		acceptedOptions: {
-			type: 'array'
-		},
-		answers: {
-			type: 'array'
-		},
-		answered: {
-			type: 'array'
-		}
-		
+		/**
+		 * id
+		 * @type {uuid}
+		 */
+		id: 'string',
+		question: 'string',
+		type: 'string',
+		createdAt: 'date',
+		acceptedOptions: 'array',
+		answers: 'array',
+		answered: 'array'
 	},
 
 	session: {
@@ -37,10 +24,7 @@ var QuestionModel = State.extend({
 			type: 'boolean',
 			default: false
 		},
-		highlight: {
-			type: 'string',
-			default: ''
-		}
+		highlight: 'string'
 	},
 
 	derived: {
@@ -49,7 +33,7 @@ var QuestionModel = State.extend({
 			fn: function(){
 				var result = [],
 					total = this.answers.length,
-					countStrategy = undefined
+					countStrategy = 'value'
 					self = this;
 
 				return _.chain(this.answers)
@@ -71,6 +55,13 @@ var QuestionModel = State.extend({
 		}
 	},
 
+	/**
+	 * initialize: set manadatory props
+	 * - id, createdAt, answers, answered
+	 * 
+	 * @param  {object} props
+	 * @return {void}
+	 */
 	initialize: function(props){
 		props = props || {};
 
@@ -87,6 +78,10 @@ var QuestionModel = State.extend({
 			this.answered = [];
 	},
 
+	/**
+	 * increment the acceptedOptions array with an empty value
+	 * @return {void}
+	 */
 	incrementAcceptedOptions: function(){
 		this.acceptedOptions = this.acceptedOptions || [];
 		this.acceptedOptions.push({
@@ -94,6 +89,13 @@ var QuestionModel = State.extend({
 		});
 	},
 
+	/**
+	 * validate the model:
+	 * - check question
+	 * - check type
+	 * @param  {object} attrs
+	 * @return {Object}
+	 */
 	validate: function(attrs){
 		var errors = {};
 
@@ -108,17 +110,63 @@ var QuestionModel = State.extend({
 		return Object.keys(errors).length === 0 ? null : errors;
 	},
 
+	/**
+	 * submit an answer
+	 * @param  {String} answer [the answer value]
+	 * @return {void}
+	 */
 	submitAnswer: function( answer ){
+
+		var answerObject = {
+			id: uuid(),
+			value: answer
+		};
+
 		this.answers = this.answers || [];
-		this.answers.push(answer);
+		this.answers.push(answerObject);
 		
 		// emit answer
 		app.socket.emit('answer:submit', {
 			user: app.config.userToken,
 			question: this.id,
-			answer: answer
+			answer: answerObject
 		});
 	},
+
+	/**
+	 * get an answer by id
+	 * @param  {uuid} id [id of answer]
+	 * @return {Object|undefined} the answer object
+	 */
+	getAnswer: function(id){
+		return _.find(this.answers, function(answer){
+			return answer.id === id;
+		});
+	},
+
+	/**
+	 * delete an answer by id
+	 * 
+	 * @param  {uuid} id [id of answer]
+	 * @return {Object|undefined} the removed element
+	 */
+	removeAnswer: function(id){
+		var removed = _.remove(this.answers, function(answer){
+			return answer.id === id;
+		});
+
+		if(removed){
+			this.trigger('change');
+		}
+
+		// propagate to server
+		app.socket.emit('questions:change', {
+			user: app.config.userToken,
+			model: this.toJSON()
+		});
+
+		return removed;
+	}
 });
 
 module.exports = QuestionModel;

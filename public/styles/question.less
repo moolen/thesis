@@ -37,7 +37,13 @@
 		text-overflow: ellipsis;
 		white-space: nowrap;
 		overflow: hidden;
+		.fa-remove{
+			position: absolute;
+			right: .33em;
+			cursor: pointer;
+		}
 	}
+
 }
 
 .generate-upper-answer-percent(@i: 100) when (@i > @min-width-switch){

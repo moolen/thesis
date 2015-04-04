@@ -6,6 +6,8 @@ var $ = require('./vendor/jquery.js'),
 	livereload = require('livereload-js');
 
 Application.initialize();
+
+window.app = Application;
 },{"./application.js":207,"./vendor/jquery.js":223,"livereload-js":193}],2:[function(require,module,exports){
 ;if (typeof window !== "undefined") {  window.ampersand = window.ampersand || {};  window.ampersand["ampersand-app"] = window.ampersand["ampersand-app"] || [];  window.ampersand["ampersand-app"].push("1.0.3");}
 var Events = require('ampersand-events');
@@ -28824,6 +28826,9 @@ var Application = App.extend({
 	showQuestionView: function(id){
 		var model = this.collections.questionCollection.get(id);
 		if( model ){
+			// set highlighting
+			model.highlight = 'active';
+			// set view
 			return this.viewSwitcher.set( new ShowQuestionView({
 				model: model,
 				config: this.config,
@@ -28864,7 +28869,8 @@ module.exports.create = function createCookie(name,value,days) {
     document.cookie = name+"="+value+expires+"; path=/";
 };
 },{}],209:[function(require,module,exports){
-var hbs = require('handlebars.js');
+var hbs = require('handlebars.js'),
+	_ = require('lodash');
 
 hbs.registerHelper('is', function(val, test, opts){
 	if(val !== undefined && val == test){
@@ -28873,8 +28879,22 @@ hbs.registerHelper('is', function(val, test, opts){
 	return opts.inverse(this);
 });
 
+hbs.registerHelper('isCheckbox', function(val, opts){
+	if( _.indexOf(['bool', 'mc'], val) !== -1 ){
+		return opts.fn(this);
+	}
+	return opts.inverse(this);
+});
+
+hbs.registerHelper('isShortAnswer', function(val, opts){
+	if( val == 'sa' ){
+		return opts.fn(this);
+	}
+	return opts.inverse(this);
+});
+
 module.exports = hbs;
-},{"handlebars.js":221}],210:[function(require,module,exports){
+},{"handlebars.js":221,"lodash":195}],210:[function(require,module,exports){
 var BaseRouter = require('ampersand-router'),
 	app = require('ampersand-app');
 
@@ -28965,30 +28985,17 @@ var State = require('ampersand-state'),
 
 var QuestionModel = State.extend({
 	props: {
-		id: {
-			type: 'string'
-		},
-		question: {
-			type: 'string',
-			default: ''
-		},
-		type: {
-			type: 'string',
-			default: ''
-		},
-		createdAt: {
-			type: 'date'
-		},
-		acceptedOptions: {
-			type: 'array'
-		},
-		answers: {
-			type: 'array'
-		},
-		answered: {
-			type: 'array'
-		}
-		
+		/**
+		 * id
+		 * @type {uuid}
+		 */
+		id: 'string',
+		question: 'string',
+		type: 'string',
+		createdAt: 'date',
+		acceptedOptions: 'array',
+		answers: 'array',
+		answered: 'array'
 	},
 
 	session: {
@@ -28996,10 +29003,7 @@ var QuestionModel = State.extend({
 			type: 'boolean',
 			default: false
 		},
-		highlight: {
-			type: 'string',
-			default: ''
-		}
+		highlight: 'string'
 	},
 
 	derived: {
@@ -29008,7 +29012,7 @@ var QuestionModel = State.extend({
 			fn: function(){
 				var result = [],
 					total = this.answers.length,
-					countStrategy = undefined
+					countStrategy = 'value'
 					self = this;
 
 				return _.chain(this.answers)
@@ -29030,6 +29034,13 @@ var QuestionModel = State.extend({
 		}
 	},
 
+	/**
+	 * initialize: set manadatory props
+	 * - id, createdAt, answers, answered
+	 * 
+	 * @param  {object} props
+	 * @return {void}
+	 */
 	initialize: function(props){
 		props = props || {};
 
@@ -29046,6 +29057,10 @@ var QuestionModel = State.extend({
 			this.answered = [];
 	},
 
+	/**
+	 * increment the acceptedOptions array with an empty value
+	 * @return {void}
+	 */
 	incrementAcceptedOptions: function(){
 		this.acceptedOptions = this.acceptedOptions || [];
 		this.acceptedOptions.push({
@@ -29053,6 +29068,13 @@ var QuestionModel = State.extend({
 		});
 	},
 
+	/**
+	 * validate the model:
+	 * - check question
+	 * - check type
+	 * @param  {object} attrs
+	 * @return {Object}
+	 */
 	validate: function(attrs){
 		var errors = {};
 
@@ -29067,17 +29089,63 @@ var QuestionModel = State.extend({
 		return Object.keys(errors).length === 0 ? null : errors;
 	},
 
+	/**
+	 * submit an answer
+	 * @param  {String} answer [the answer value]
+	 * @return {void}
+	 */
 	submitAnswer: function( answer ){
+
+		var answerObject = {
+			id: uuid(),
+			value: answer
+		};
+
 		this.answers = this.answers || [];
-		this.answers.push(answer);
+		this.answers.push(answerObject);
 		
 		// emit answer
 		app.socket.emit('answer:submit', {
 			user: app.config.userToken,
 			question: this.id,
-			answer: answer
+			answer: answerObject
 		});
 	},
+
+	/**
+	 * get an answer by id
+	 * @param  {uuid} id [id of answer]
+	 * @return {Object|undefined} the answer object
+	 */
+	getAnswer: function(id){
+		return _.find(this.answers, function(answer){
+			return answer.id === id;
+		});
+	},
+
+	/**
+	 * delete an answer by id
+	 * 
+	 * @param  {uuid} id [id of answer]
+	 * @return {Object|undefined} the removed element
+	 */
+	removeAnswer: function(id){
+		var removed = _.remove(this.answers, function(answer){
+			return answer.id === id;
+		});
+
+		if(removed){
+			this.trigger('change');
+		}
+
+		// propagate to server
+		app.socket.emit('questions:change', {
+			user: app.config.userToken,
+			model: this.toJSON()
+		});
+
+		return removed;
+	}
 });
 
 module.exports = QuestionModel;
@@ -29119,7 +29187,7 @@ module.exports = "<li draggable=\"true\" class=\"{{model.highlight}}\">{{model.q
 module.exports = "<div id=\"question-list-view\">\n\t<ul class=\"question-list\"></ul>\t\n</div>\n";
 
 },{}],219:[function(require,module,exports){
-module.exports = "<div id=\"show-question\">\n\t<h3>Show Question</h3>\n\t\n\t<div class=\"form-wrap\">\n\t\t<label for=\"show-question-model-question\">Question:</label><input disabled type=\"text\" id=\"show-question-model-question\" data-hook=\"question\" value=\"why it this\">\n\t</div>\n\n\t{{#if config.isAdmin }}\n\t\t\n\t\t{{#is this.model.type 'mc'}}\n\t\t\t<ul>\n\t\t\t\t{{#each model.preparedAnswers}}\n\t\t\t\t\t<li class=\"answer-block\">\n\t\t\t\t\t\t<span class=\"answer-bar p-{{percent}}\"></span>\n\t\t\t\t\t\t<span class=\"answer-value p-{{percent}}\">{{key}}: {{percent}}%</span>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t{{/is}}\n\n\t\t{{#is this.model.type 'bool'}}\n\t\t\t<ul>\n\t\t\t\t{{#each model.preparedAnswers}}\n\t\t\t\t\t<li class=\"answer-block\">\n\t\t\t\t\t\t<span class=\"answer-bar p-{{percent}}\"></span>\n\t\t\t\t\t\t<span class=\"answer-value p-{{percent}}\">{{key}}: {{percent}}%</span>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t{{/is}}\n\n\t\t{{#is this.model.type 'sa'}}\n\t\t\t<h3>sa ADMIN</h3>\n\t\t{{/is}}\n\n\t\t{{#is this.model.type 'go'}}\n\t\t\t<h3>go ADMIN</h3>\n\t\t{{/is}}\n\n\t{{else}}\n\n\t\t{{#is this.model.hasAnswered false}}\n\n\t\t\t{{#is this.model.type 'mc'}}\n\t\t\t\t{{#each model.acceptedOptions}}\n\t\t\t\t\t<div class=\"form-wrap mc\">\n\t\t\t\t\t\t<input type=\"radio\"  name=\"question\" id=\"mc-answer-{{value}}\" value=\"{{value}}\" class=\"mc-answer\"><label for=\"mc-answer-{{value}}\">{{value}}</label>\t\t\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t{{/each}}\n\t\t\t{{/is}}\n\n\t\t\t{{#is this.model.type 'bool'}}\n\t\t\t\t<input type=\"radio\" name=\"question\" id=\"question-bool-true\" value=\"true\"> <label for=\"question-bool-true\">True</label>\n\t\t\t\t<input type=\"radio\" name=\"question\" id=\"question-bool-false\" value=\"false\"><label for=\"question-bool-false\">False</label>\n\t\t\t{{/is}}\n\n\t\t\t{{#is this.model.type 'sa'}}\n\t\t\t\t<h3>sa ADMIN</h3>\n\t\t\t{{/is}}\n\n\t\t\t{{#is this.model.type 'go'}}\n\t\t\t\t<h3>go ADMIN</h3>\n\t\t\t{{/is}}\n\n\t\t\t<button class=\"button white submit-answer\">submit</button>\n\n\t\t{{else}}\n\t\t\t<h3>you already participated</h3>\n\t\t{{/is}}\n\t\t\n\n\t{{/if}}\n\n</div>";
+module.exports = "<div id=\"show-question\">\n\t<h3>Show Question</h3>\n\t\n\t<div class=\"form-wrap\">\n\t\t<label for=\"show-question-model-question\">Question:</label><input disabled type=\"text\" id=\"show-question-model-question\" data-hook=\"question\" value=\"why it this\">\n\t</div>\n\n\t{{#if config.isAdmin }}\n\t\t\n\t\t<h3>Answers:</h3>\n\n\t\t{{#isCheckbox this.model.type}}\n\t\t\t<ul>\n\t\t\t\t{{#each model.preparedAnswers}}\n\t\t\t\t\t<li class=\"answer-block\">\n\t\t\t\t\t\t<span class=\"answer-bar p-{{percent}}\"></span>\n\t\t\t\t\t\t<span class=\"answer-value p-{{percent}}\">{{key}}: {{percent}}%</span>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t{{/isCheckbox}}\n\n\t\t{{#isShortAnswer this.model.type}}\n\t\t\t<ul>\n\t\t\t\t{{#each model.answers}}\n\t\t\t\t\t<li class=\"answer-block\" data-id=\"{{id}}\">\n\t\t\t\t\t\t<span class=\"answer-bar p-100\"></span>\n\t\t\t\t\t\t<span class=\"answer-value p-100\">{{value}}<span class=\"fa fa-remove remove-answer\"></span></span>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t{{/isShortAnswer}}\n\n\t\t{{#is this.model.type 'go'}}\n\t\t\t<h3>go ADMIN</h3>\n\t\t{{/is}}\n\n\t{{else}}\n\n\t\t{{#is this.model.hasAnswered false}}\n\n\t\t\t{{#is this.model.type 'mc'}}\n\t\t\t\t{{#each model.acceptedOptions}}\n\t\t\t\t\t<div class=\"form-wrap mc\">\n\t\t\t\t\t\t<input type=\"radio\"  name=\"question\" id=\"mc-answer-{{value}}\" value=\"{{value}}\" class=\"mc-answer\"><label for=\"mc-answer-{{value}}\">{{value}}</label>\t\t\t\t\t\t\t\n\t\t\t\t\t</div>\n\t\t\t\t{{/each}}\n\t\t\t{{/is}}\n\n\t\t\t{{#is this.model.type 'bool'}}\n\t\t\t\t<input type=\"radio\" name=\"question\" id=\"question-bool-true\" value=\"true\"> <label for=\"question-bool-true\">True</label>\n\t\t\t\t<input type=\"radio\" name=\"question\" id=\"question-bool-false\" value=\"false\"><label for=\"question-bool-false\">False</label>\n\t\t\t{{/is}}\n\n\t\t\t{{#is this.model.type 'sa'}}\n\t\t\t\t<div class=\"form-wrap\">\n\t\t\t\t\t<label for=\"question-sa\">Your answer:</label><input id=\"question-sa\" name=\"question\" type=\"text\" >\n\t\t\t\t</div>\n\t\t\t{{/is}}\n\n\t\t\t{{#is this.model.type 'go'}}\n\t\t\t\t<h3>go ADMIN</h3>\n\t\t\t{{/is}}\n\n\t\t\t<button class=\"button white submit-answer\">submit</button>\n\n\t\t{{else}}\n\t\t\t<h3>you already participated</h3>\n\t\t{{/is}}\n\t\t\n\n\t{{/if}}\n\n</div>";
 
 },{}],220:[function(require,module,exports){
 module.exports = "<span class=\"user-count-view\">active users: <span data-hook=\"count\">{{ model.count }}</span>";
@@ -33059,7 +33127,8 @@ var ShowQuestion = BaseView.extend({
 	autoRender: true,
 
 	events: {
-		'click .submit-answer': 'submitAnswer'
+		'click .submit-answer': 'submitAnswer',
+		'click .remove-answer': 'removeAnswer'
 	},
 
 	template: handlebars.compile(template),
@@ -33070,6 +33139,7 @@ var ShowQuestion = BaseView.extend({
 			hook: 'question'
 		}
 	},
+
 	initialize: function(options){
 		this.config = options.config;
 		this.model.on('change', this.render.bind(this));
@@ -33077,12 +33147,33 @@ var ShowQuestion = BaseView.extend({
 	},
 
 	submitAnswer: function(){
-		var $el = $('input[name="question"]:checked');
-		if( $el.length > 0 ){
-			this.model.submitted = true;
-			this.model.submitAnswer( $el.val() );
+		var $el, val;
+
+		if( this.model.type == 'sa' ){
+			$el = $('input[name="question"]');
+			val = $el.val();
+		}else{
+			$el = $('input[name="question"]:checked');
+			val = $el.val();
 		}
+
+		if( $el.length > 0 && val ){
+			this.model.submitted = true;
+			this.model.submitAnswer( val );
+		}
+	},
+
+	removeAnswer: function(e){
+
+		var $el = $(e.target).closest('li'),
+			id = $el.attr('data-id');
+
+		if( $el && id ){
+			this.model.removeAnswer(id);
+		}
+
 	}
+
 });
 
 module.exports = ShowQuestion;
