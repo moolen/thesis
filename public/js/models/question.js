@@ -104,6 +104,12 @@ var QuestionModel = State.extend({
 		}
 	},
 
+	/**
+	 * look inside the groups collection
+	 * and search for our submitted Answer
+	 * if we found it set the assignedGroup property
+	 * @return {void}
+	 */
 	checkAssignedGroups: function(){
 		if(this.submittedAnswer && this.groups && this.groups.length > 0){
 			var self = this;
@@ -117,6 +123,7 @@ var QuestionModel = State.extend({
 			});
 		}
 	},
+	
 	/**
 	 * increment the acceptedOptions array with an empty value
 	 * @return {void}

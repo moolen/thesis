@@ -31,6 +31,11 @@ var ShowQuestion = BaseView.extend({
 		app.router.navigate('question/' + this.model.id);
 	},
 
+	/**
+	 * renders template,
+	 * renders adminView if user is admin
+	 * @return {ShowQuestionView}
+	 */
 	render: function(){
 		this.renderWithTemplate();
 
@@ -42,8 +47,15 @@ var ShowQuestion = BaseView.extend({
 				'.question-detail'
 			);
 		}
+		return this;
 	},
 
+	/**
+	 * submit the answer
+	 * - look for the appropriate input-field
+	 * - tell the model the change
+	 * @return {void}
+	 */
 	submitAnswer: function(){
 		var $el, val;
 

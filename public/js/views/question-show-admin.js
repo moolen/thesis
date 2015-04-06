@@ -29,6 +29,11 @@ var GroupOrganization = BaseView.extend({
 
 	initialize: function(){},
 
+	/**
+	 * remove and answer from an SA-Question
+	 * @param  {MouseEvent} e
+	 * @return {void}
+	 */
 	removeAnswer: function(e){
 		var $el = $(e.target).closest('li'),
 			id = $el.attr('data-id');
@@ -40,6 +45,11 @@ var GroupOrganization = BaseView.extend({
 		}
 	},
 
+	/**
+	 * remove a member from a group
+	 * @param  {MouseEvent} e
+	 * @return {void}
+	 */
 	removeMember: function(e){
 		var $el = $(e.target),
 			memberId = $el.closest('li.member').attr('data-id'),
@@ -54,17 +64,30 @@ var GroupOrganization = BaseView.extend({
 		}
 	},
 
+	/**
+	 * remove all members from all grouos
+	 * @return {void}
+	 */
 	removeAllMembers: function(){
 		this.model.groups.removeAllMembers();
 		this.model.save();
 		this.render();
 	},
 
+	/**
+	 * save & publish the current group-organization
+	 * @return {void}
+	 */
 	publishGroups: function(){
 		this.model.save();
 		this.model.publishGroups();
 	},
 
+	/**
+	 * keyup callback for group-count input-field
+	 * @param  {KeyUpEvent} e
+	 * @return {void}
+	 */
 	changeGroupCount: function(e){
 		var $el = $(e.target),
 			val = $el.val(),
@@ -81,12 +104,21 @@ var GroupOrganization = BaseView.extend({
 
 	},
 
+	/**
+	 * randomize the group members
+	 * @return {void}
+	 */
 	randomizeGroups: function(){
 		this.model.groups.randomize(this.model.answers);
 		this.model.save();
 		this.render();
 	},
 
+	/**
+	 * dragstart callback
+	 * @param  {Event} e
+	 * @return {void}
+	 */
 	dragStart: function(e){
 		var $el = $(e.target),
 			id = $el.closest('li').attr('data-id');
@@ -95,6 +127,11 @@ var GroupOrganization = BaseView.extend({
 		e.dataTransfer.setData('text/html', id);
 	},
 
+	/**
+	 * dragenter callback
+	 * @param  {Event} e
+	 * @return {void}
+	 */
 	dragEnter: function(e){
 		var $closestElement = $(e.target).closest('.drag-target');
 
@@ -103,6 +140,11 @@ var GroupOrganization = BaseView.extend({
 		}
 	},
 
+	/**
+	 * dragover callback
+	 * @param  {Event} e
+	 * @return {void}
+	 */
 	dragOver: function(e){
 		if (e.preventDefault) {
 			e.preventDefault();
@@ -125,6 +167,11 @@ var GroupOrganization = BaseView.extend({
 		return false;
 	},
 
+	/**
+	 * dragleave callback
+	 * @param  {Event} e
+	 * @return {void}
+	 */
 	dragLeave: function(e){
 		var $closestTarget = $(e.target).closest('.drag-target');
 		
@@ -134,6 +181,11 @@ var GroupOrganization = BaseView.extend({
 		}
 	},
 
+	/**
+	 * dragdrop callback
+	 * @param  {Event} e
+	 * @return {void}
+	 */
 	dragDrop: function(e){
 		var $closestTarget = $(e.target).closest('.drag-target'),
 			AnswerId = e.dataTransfer.getData('text/html'),
@@ -151,8 +203,22 @@ var GroupOrganization = BaseView.extend({
 		}
 	},
 
+	/**
+	 * dragend callback
+	 * @param  {Event} e
+	 * @return {void}
+	 */
 	dragEnd: function(e){},
 
+	/**
+	 * change the group name
+	 * - display input field
+	 * - bind events
+	 * 
+	 * @todo  refactor
+	 * @param  {MousEvent} e
+	 * @return {void}
+	 */
 	changeGroupName: function(e){
 		var $el = $(e.target),
 			val = $el.html(),
