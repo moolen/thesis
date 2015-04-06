@@ -1,0 +1,68 @@
+<div class="question-detail">
+
+	{{#isCheckbox this.model.type}}
+		<ul>
+			{{#each model.preparedAnswers}}
+				<li class="answer-block">
+					<span class="answer-bar p-{{percent}}"></span>
+					<span class="answer-value p-{{percent}}">{{key}}: {{percent}}%</span>
+				</li>
+			{{/each}}
+		</ul>
+	{{/isCheckbox}}
+
+	{{#isShortAnswer this.model.type}}
+		<ul>
+			{{#each model.answers}}
+				<li class="answer-block" data-id="{{id}}">
+					<span class="answer-bar p-100"></span>
+					<span class="answer-value p-100">{{value}}<span class="fa fa-remove remove-answer"></span></span>
+				</li>
+			{{/each}}
+		</ul>
+	{{/isShortAnswer}}
+
+	{{#is this.model.type 'go'}}
+	
+		<div class="two-thirds fl">
+			<h3>Participants ({{model.answers.length}})</h3>
+			<ul class="participant-list">
+				{{#each model.answers}}
+					<li draggable="true" class="answer-block" data-id="{{id}}">
+						<span class="answer-bar p-100"></span>
+						<span class="answer-value p-100">{{value}}</span>
+					</li>
+				{{/each}}
+			</ul>	
+		</div>
+		<div class="one-third fl">
+			<h3>Groups</h3>
+			<div class="group-controls">
+				<div class="group-count">
+					Number of groups: <input type="text" name="group-count" value="{{model.groups.length}}">
+				</div>
+				<button class="button small randomize-groups"><span class="fa fa-random"></span> Randomize Members</button>
+				<button class="remove-all-member button small"><span class="fa fa-remove"></span> Remove all Members</button>
+				<button class="button small green publish-groups"><span class="fa fa-bullhorn"></span> Publish Groups</button>
+			</div>
+			<ul class="groups">
+				{{#each model.groups.models}}
+					<li data-id="{{id}}" class="drag-target group">
+						<span class="group-desc">Group: </span>
+						<span class="group-name">{{name}}</span>
+						<ul class="members">
+							{{#each members}}
+							<li data-id="{{id}}" class="member">{{value}}<span class="fa fa-remove remove-member "></span></li>
+							{{/each}}
+						</ul>
+					</li>
+				{{/each}}
+			</ul>
+		</div>
+		<div class="cf"></div>
+
+	{{/is}}
+
+
+		
+</div>

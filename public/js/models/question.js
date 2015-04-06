@@ -1,15 +1,12 @@
 var State = require('ampersand-state'),
 	app = require('ampersand-app'),
+	GroupCollection = require('models/group-collection.js'),
 	cookie = require('lib/cookie.js'),
 	uuid = require('lib/uuid.js'),
 	_ = require('lodash');
 
 var QuestionModel = State.extend({
 	props: {
-		/**
-		 * id
-		 * @type {uuid}
-		 */
 		id: 'string',
 		question: 'string',
 		type: 'string',
@@ -19,10 +16,20 @@ var QuestionModel = State.extend({
 		answered: 'array'
 	},
 
+	collections: {
+		groups: GroupCollection
+	},
+
 	session: {
 		submitted: {
 			type: 'boolean',
 			default: false
+		},
+		submittedAnswer: {
+			type: 'string'
+		},
+		assignedGroup: {
+			type: 'string'
 		},
 		highlight: 'string'
 	},
@@ -50,7 +57,9 @@ var QuestionModel = State.extend({
 		hasAnswered: {
 			deps: ['answered'],
 			fn: function(){
-				return _.indexOf(this.answered, cookie.read('user-token')) !== -1
+				return _.indexOf(
+					this.answered, cookie.read('user-token')
+				) !== -1;
 			}
 		}
 	},
@@ -65,19 +74,49 @@ var QuestionModel = State.extend({
 	initialize: function(props){
 		props = props || {};
 
-		if(!props.createdAt)
+		app.socket.on('group:publish', this.checkAssignedGroups.bind(this));
+
+		if(!props.groups){
+			this.groups = new GroupCollection([{name: 'GRP1'}, {name: 'GRP2'}, {name: 'GRP3'}, {name: 'GRP4'}]);
+		}
+
+		if(!props.submittedAnswer){
+			var item = window.localStorage.getItem('answer' + this.id);
+			if(item){
+				this.submittedAnswer = item;
+			}
+		}
+
+		if(!props.createdAt){
 			this.createdAt = new Date();
+		}
 		
-		if(!props.id)
+		if(!props.id){
 			this.id = uuid();
+		}
 
-		if(!props.answers)
+		if(!props.answers){
 			this.answers = [];
+		}
 
-		if(!props.answered)
+		if(!props.answered){
 			this.answered = [];
+		}
 	},
 
+	checkAssignedGroups: function(){
+		if(this.submittedAnswer && this.groups && this.groups.length > 0){
+			var self = this;
+			_.each(this.groups.models, function(group){
+				var found = _.find(group.members, function(member){
+					return member.value === self.submittedAnswer;
+				});
+				if( found ){
+					self.assignedGroup = group.name;
+				}
+			});
+		}
+	},
 	/**
 	 * increment the acceptedOptions array with an empty value
 	 * @return {void}
@@ -99,11 +138,11 @@ var QuestionModel = State.extend({
 	validate: function(attrs){
 		var errors = {};
 
-		if( attrs.question.length < 3 ){
+		if( !attrs.question || attrs.question.length < 3 ){
 			errors.question = true;
 		}
 
-		if( attrs.type.length === 0 ){
+		if( !attrs.type || attrs.type.length === 0 ){
 			errors.type = true;
 		}
 
@@ -117,6 +156,9 @@ var QuestionModel = State.extend({
 	 */
 	submitAnswer: function( answer ){
 
+		window.localStorage.setItem('answer'+this.id, answer);
+		this.submittedAnswer = answer;
+
 		var answerObject = {
 			id: uuid(),
 			value: answer
@@ -124,12 +166,23 @@ var QuestionModel = State.extend({
 
 		this.answers = this.answers || [];
 		this.answers.push(answerObject);
-		
+
 		// emit answer
 		app.socket.emit('answer:submit', {
 			user: app.config.userToken,
 			question: this.id,
 			answer: answerObject
+		});
+	},
+
+	/**
+	 * publishes the group-settings
+	 * @return {void}
+	 */
+	publishGroups: function(){
+		app.socket.emit('group:publish', {
+			user: app.config.userToken,
+			groups: this.groups
 		});
 	},
 
@@ -160,12 +213,20 @@ var QuestionModel = State.extend({
 		}
 
 		// propagate to server
+		this.save();
+
+		return removed;
+	},
+
+	/**
+	 * saves this question
+	 * @return {void}
+	 */
+	save: function(){
 		app.socket.emit('questions:change', {
 			user: app.config.userToken,
 			model: this.toJSON()
 		});
-
-		return removed;
 	}
 });
 

@@ -5,70 +5,45 @@
 		<label for="show-question-model-question">Question:</label><input disabled type="text" id="show-question-model-question" data-hook="question" value="why it this">
 	</div>
 
-	{{#if config.isAdmin }}
-		
-		<h3>Answers:</h3>
+	<div class="question-detail">
+		{{#unless config.isAdmin}}
+			{{#is this.model.hasAnswered false}}
 
-		{{#isCheckbox this.model.type}}
-			<ul>
-				{{#each model.preparedAnswers}}
-					<li class="answer-block">
-						<span class="answer-bar p-{{percent}}"></span>
-						<span class="answer-value p-{{percent}}">{{key}}: {{percent}}%</span>
-					</li>
-				{{/each}}
-			</ul>
-		{{/isCheckbox}}
+				{{#is this.model.type 'mc'}}
+					{{#each model.acceptedOptions}}
+						<div class="form-wrap mc">
+							<input type="radio"  name="question" id="mc-answer-{{value}}" value="{{value}}" class="mc-answer"><label for="mc-answer-{{value}}">{{value}}</label>							
+						</div>
+					{{/each}}
+				{{/is}}
 
-		{{#isShortAnswer this.model.type}}
-			<ul>
-				{{#each model.answers}}
-					<li class="answer-block" data-id="{{id}}">
-						<span class="answer-bar p-100"></span>
-						<span class="answer-value p-100">{{value}}<span class="fa fa-remove remove-answer"></span></span>
-					</li>
-				{{/each}}
-			</ul>
-		{{/isShortAnswer}}
+				{{#is this.model.type 'bool'}}
+					<input type="radio" name="question" id="question-bool-true" value="true"> <label for="question-bool-true">True</label>
+					<input type="radio" name="question" id="question-bool-false" value="false"><label for="question-bool-false">False</label>
+				{{/is}}
 
-		{{#is this.model.type 'go'}}
-			<h3>go ADMIN</h3>
-		{{/is}}
-
-	{{else}}
-
-		{{#is this.model.hasAnswered false}}
-
-			{{#is this.model.type 'mc'}}
-				{{#each model.acceptedOptions}}
-					<div class="form-wrap mc">
-						<input type="radio"  name="question" id="mc-answer-{{value}}" value="{{value}}" class="mc-answer"><label for="mc-answer-{{value}}">{{value}}</label>							
+				{{#is this.model.type 'sa'}}
+					<div class="form-wrap">
+						<label for="question-sa">Your answer:</label><input id="question-sa" name="question" type="text" >
 					</div>
-				{{/each}}
+				{{/is}}
+
+				{{#is this.model.type 'go'}}
+					<div class="form-wrap">
+						<label for="question-sa">Your name:</label><input id="question-sa" name="question" type="text" >
+					</div>
+				{{/is}}
+
+				<button class="button submit-answer">submit</button>
+
+			{{else}}
+				{{#if this.model.assignedGroup}}
+					Your Group: &quot;{{this.model.assignedGroup}}&quot;
+				{{else}}
+					<h3>you already participated</h3>
+				{{/if}}
 			{{/is}}
-
-			{{#is this.model.type 'bool'}}
-				<input type="radio" name="question" id="question-bool-true" value="true"> <label for="question-bool-true">True</label>
-				<input type="radio" name="question" id="question-bool-false" value="false"><label for="question-bool-false">False</label>
-			{{/is}}
-
-			{{#is this.model.type 'sa'}}
-				<div class="form-wrap">
-					<label for="question-sa">Your answer:</label><input id="question-sa" name="question" type="text" >
-				</div>
-			{{/is}}
-
-			{{#is this.model.type 'go'}}
-				<h3>go ADMIN</h3>
-			{{/is}}
-
-			<button class="button white submit-answer">submit</button>
-
-		{{else}}
-			<h3>you already participated</h3>
-		{{/is}}
-		
-
-	{{/if}}
+		{{/unless}}
+	</div>	
 
 </div>

@@ -39,6 +39,10 @@ var CreateQuestion = BaseView.extend({
 		this.model.type = val;
 	},
 
+	getQuestion: function(){
+		return $(this.el).find('[data-hook="question"]').val()
+	},
+
 	getAcceptedOptions: function(){
 		var options = [];
 		
@@ -52,7 +56,7 @@ var CreateQuestion = BaseView.extend({
 	},
 
 	addOption: function(){
-
+		this.model.question = this.getQuestion();
 		this.model.acceptedOptions = this.getAcceptedOptions();
 
 		this.model.incrementAcceptedOptions();

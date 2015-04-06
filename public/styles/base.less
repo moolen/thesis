@@ -16,6 +16,11 @@ a{
 	text-decoration: none;
 }
 
+ul, li{
+	list-style: none;
+	padding:0;
+}
+
 [draggable] {
   -moz-user-select: none;
   -khtml-user-select: none;
@@ -48,15 +53,9 @@ a{
 }
 
 #main{
-	width: 60%;
+	width: 77.5%;
 	margin-left: 2.5%;
 	min-height: 1px;
-	float: left;
-}
-
-#right-nav{
-	width: 15%;
-	margin-left: 2.5%;
 	float: left;
 }
 
@@ -102,7 +101,7 @@ input[type="text"]{
 	font-size: .8em;
 
 	&.error{
-		border: 1px solid #FF7E70;
+		border: 1px solid @error-color;
 	}
 
 	&:focus{
@@ -117,7 +116,7 @@ select{
 	background: #fff;
 
 	&.error{
-		border: 1px solid #FF7E70;
+		border: 1px solid @error-color;
 	}
 
 	&:focus{

@@ -1,6 +1,8 @@
 var $ = require('jquery.js'),
 	app = require('ampersand-app'),
 	BaseView = require('ampersand-view'),
+	AdminDetailView = require('views/question-show-admin.js'),
+	GroupModel = require('models/group.js'),
 	handlebars = require('lib/hbs-helper.js'),
 	template = require('templates/question-show.hbs');
 
@@ -8,9 +10,10 @@ var ShowQuestion = BaseView.extend({
 
 	autoRender: true,
 
+	dragSourceId: null,
+
 	events: {
-		'click .submit-answer': 'submitAnswer',
-		'click .remove-answer': 'removeAnswer'
+		'click .submit-answer': 'submitAnswer'
 	},
 
 	template: handlebars.compile(template),
@@ -28,10 +31,23 @@ var ShowQuestion = BaseView.extend({
 		app.router.navigate('question/' + this.model.id);
 	},
 
+	render: function(){
+		this.renderWithTemplate();
+
+		if( app.config.isAdmin ){
+			this.renderSubview(
+				new AdminDetailView({
+					model: this.model
+				}),
+				'.question-detail'
+			);
+		}
+	},
+
 	submitAnswer: function(){
 		var $el, val;
 
-		if( this.model.type == 'sa' ){
+		if( this.model.type == 'sa' || this.model.type == 'go' ){
 			$el = $('input[name="question"]');
 			val = $el.val();
 		}else{
@@ -43,17 +59,6 @@ var ShowQuestion = BaseView.extend({
 			this.model.submitted = true;
 			this.model.submitAnswer( val );
 		}
-	},
-
-	removeAnswer: function(e){
-
-		var $el = $(e.target).closest('li'),
-			id = $el.attr('data-id');
-
-		if( $el && id ){
-			this.model.removeAnswer(id);
-		}
-
 	}
 
 });

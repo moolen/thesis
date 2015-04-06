@@ -1,42 +1,49 @@
-.button{
-	@button-base-color: @primary-color;
 
+/**
+ * button color mixin
+ * - sets the appropriate bg- and fg-styles
+ * @param  {color} @bg-color:   @primary-color
+ * @param  {color} @font-color: #fff
+ * @return {void}
+ */
+.button-color(@bg-color: @primary-color, @font-color: #fff){
+
+	background-color: @bg-color;
+	color: @font-color;
+	border: 1px solid darken(@bg-color, 10%);
+
+	&:hover{
+		background-color: lighten(@bg-color, 5%);
+	}
+
+	&:active{
+		background-color: lighten(@bg-color, 10%);
+	}
+}
+
+.button{
 	padding: .5em 1em;
-	background-color: @button-base-color;
-	color: #fff;
 	font-size: 1.33em;
-	border: 1px solid lighten(@button-base-color, 10%);
 	border-radius: 3px;
 	cursor: pointer;
 	transition: background-color .1s ease-out;
 
-	&.white{
-		background-color: #fff;
-		color: #333;
+	background-color: #fff;
+	color: #333;
 	
-		&:hover{
-			background-color: #fff;
-		}
-		&:active{
-			background-color: #fff;
-		}
-	}
-
 	&.small{
 		padding: .25em .5em;
 		font-size: 1em;
 	}
 
-	&:hover{
-		background-color: lighten(@button-base-color, 5%);
-	}
-
-	&:active{
-		background-color: lighten(@button-base-color, 10%);
-	}
+	.button-color(@primary-color);
 
 	&:focus{
 		outline: none;
+	}
+
+	&.green{
+		.button-color(@secondary-color);
 	}
 }
 

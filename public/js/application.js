@@ -10,7 +10,6 @@ var	io = require('io.js'),
 	CreateQuestionView = require('views/question-create.js'),
 	ShowQuestionView = require('views/question-show.js'),
 	QuestionCollection = require('models/question-collection.js'),
-	ActivityCollection = require('models/activity-collection.js'),
 	UsercountView = require('views/user-count.js');
 
 var Application = App.extend({
@@ -63,14 +62,7 @@ var Application = App.extend({
 		 * - populated @server:ready
 		 * @type {QuestionCollection}
 		 */
-		questionCollection: null,
-		
-		/**
-		 * Activity Collection
-		 * - populated @server:ready
-		 * @type {ActivityCollection}
-		 */
-		activityCollection: null
+		questionCollection: null
 	},
 
 	/**
@@ -122,10 +114,6 @@ var Application = App.extend({
 			[], { socket: this.socket }
 		);
 
-		this.collections.activityCollection = new ActivityCollection(
-			[], { socket: this.socket }
-		);
-
 		this.views.questionList = new QuestionList({
 			el: $('#question-list-view')[0],
 			config: this.config,
@@ -154,17 +142,16 @@ var Application = App.extend({
 	 * is called when the server tells us he is ready
 	 * this is the _last_ part of the initialization process
 	 *
-	 * - sets the collection data [questions, activity]
+	 * - sets the collection data [questions]
 	 * - sets the usercount
 	 * - renders the question list
 	 * - starts the router history
 	 * 
-	 * @param  {object} initialData [initial data: questions, activity, usercount]
+	 * @param  {object} initialData [initial data: questions, usercount]
 	 * @return {void}
 	 */
 	onServerReady: function( initialData ){
 		this.collections.questionCollection.set( initialData.questions, { silent: true } );
-		this.collections.activityCollection.set( initialData.activities, { silent: true } );
 		this.models.usercount.set( initialData.usercount, { silent: true } );
 
 		this.views.questionList.render();
@@ -202,6 +189,7 @@ var Application = App.extend({
 	 */
 	createQuestionView: function(){
 		if( this.config.isAdmin ){
+			this.views.questionList.removeHighlight();
 			return this.viewSwitcher.set( new CreateQuestionView({
 				el: $('#create-question')[0],
 				collection: this.collections.questionCollection
