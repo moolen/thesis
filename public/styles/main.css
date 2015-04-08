@@ -1970,6 +1970,17 @@
 .button.green:active {
   background-color: #34a532;
 }
+.button.black {
+  background-color: #333333;
+  color: #ffffff;
+  border: 1px solid #1a1a1a;
+}
+.button.black:hover {
+  background-color: #404040;
+}
+.button.black:active {
+  background-color: #4d4d4d;
+}
 .create-session-button {
   width: 240px;
   display: block;

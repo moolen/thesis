@@ -52,5 +52,15 @@ module.exports = BaseCollection.extend({
 		_.each(this.models, function(group, index){
 			group.members = groupedMembers[index];
 		});
+	},
+	addMemberExclusively: function(group, member){
+		_.each(this.models, function(model){
+			// different group: remove member if existing
+			if(model.id !== group.id){
+				model.removeMember(member.id);
+			}else{
+				model.addMember(member);
+			}
+		});
 	}
 });

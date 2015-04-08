@@ -94,9 +94,6 @@ var GroupOrganization = BaseView.extend({
 			intVal = parseInt(val, 10);
 
 		if( !_.isNaN(intVal) ){
-			if(intVal > this.model.answers.length){
-				intVal = this.model.answers.length;
-			}
 			this.model.groups.setCount(intVal);
 			this.model.save();
 			this.render();
@@ -197,7 +194,12 @@ var GroupOrganization = BaseView.extend({
 		$closestTarget.removeClass('not-allowed');
 
 		if( group && member && !group.hasMember(AnswerId) ){
-			group.addMember(member);
+			// group: exclusive membership
+			if( this.model.type === "go" ){
+				this.model.groups.addMemberExclusively(group, member);
+			}else{ // short-answer: any answer can go in any group whatsoever
+				this.model.addMember(member);
+			}
 			this.model.save();
 			this.render();
 		}
