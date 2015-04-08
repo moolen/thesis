@@ -195,10 +195,13 @@ var GroupOrganization = BaseView.extend({
 
 		if( group && member && !group.hasMember(AnswerId) ){
 			// group: exclusive membership
+			// the logic is inside the group-collection
 			if( this.model.type === "go" ){
 				this.model.groups.addMemberExclusively(group, member);
-			}else{ // short-answer: any answer can go in any group whatsoever
-				this.model.addMember(member);
+			}else{
+				// short-answer: any answer can go in any group whatsoever
+				// the logic is inside the group-model
+				group.addMember(member);
 			}
 			this.model.save();
 			this.render();
