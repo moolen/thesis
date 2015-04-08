@@ -3,7 +3,6 @@ var gulp = require('gulp'),
 	path = require('path'),
 	watch = require('gulp-watch'),
 	less = require('gulp-less'),
-	livereload = require('gulp-livereload'),
 	watchify = require('watchify'),
 	source = require('vinyl-source-stream'),
 	stringify = require('stringify'),
@@ -35,15 +34,10 @@ gulp.task('watch', function(){
 		'./public/js/**/*.hbs',
 		'!./public/js/build/**'
 		],
-		['browserify'],function(){
-			livereload();
-	});
+		['browserify']);
 
-	gulp.watch('./public/styles/**/*.less', ['less'], function(){
-		livereload();
-	});
+	gulp.watch('./public/styles/**/*.less', ['less']);
 
-	livereload.listen(35729);
 });
 
 gulp.task('default', ['watch']);
