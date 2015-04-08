@@ -27734,7 +27734,6 @@ module.exports = function (){
 }
 },{}],203:[function(require,module,exports){
 var _ = require('lodash'),
-	uuid = require('lib/uuid.js'),
 	BaseCollection = require('ampersand-collection'),
 	GroupModel = require('models/group.js');
 
@@ -27752,25 +27751,19 @@ module.exports = BaseCollection.extend({
 		// new count greater than current
 		if( diff <= 0 ){
 			for(var i = diff; i<0; i++){
-				var uid = uuid();
 				this.add(new GroupModel({
-					name: uid
+					name: "group-name"
 				}));
 			}
 		// new count smaller the current
 		}else{
-			// reset all models
-			this.models = [];
-
-			for( var i = 0; i < val; i++ ){
-				var uid = uuid();
-				this.add(new GroupModel({
-					name: uid
-				}));
-			}
+			// reset all models' members
+			// and remove obsolete groups
+			_.remove(this.models, function(model, index){
+				model.members = [];
+				return index >= val;
+			});
 		}
-
-		
 	},
 
 	removeAllMembers: function(){
@@ -27796,7 +27789,7 @@ module.exports = BaseCollection.extend({
 		});
 	}
 });
-},{"ampersand-collection":26,"lib/uuid.js":202,"lodash":186,"models/group.js":204}],204:[function(require,module,exports){
+},{"ampersand-collection":26,"lodash":186,"models/group.js":204}],204:[function(require,module,exports){
 var State = require('ampersand-state'),
 	app = require('ampersand-app'),
 	uuid = require('lib/uuid.js'),
@@ -27811,6 +27804,8 @@ var QuestionModel = State.extend({
 	},
 	
 	initialize: function(props){
+		props = props || {};
+		
 		if(!props.members)
 			this.members = [];
 		if(!props.id)
@@ -28153,7 +28148,7 @@ module.exports = "<li draggable=\"true\" class=\"{{model.highlight}}\">{{model.q
 module.exports = "<div id=\"question-list-view\">\n\t<ul class=\"question-list\"></ul>\t\n</div>\n";
 
 },{}],211:[function(require,module,exports){
-module.exports = "<div class=\"question-detail\">\n\n\t{{#isCheckbox this.model.type}}\n\t\t<ul>\n\t\t\t{{#each model.preparedAnswers}}\n\t\t\t\t<li class=\"answer-block\">\n\t\t\t\t\t<span class=\"answer-bar p-{{percent}}\"></span>\n\t\t\t\t\t<span class=\"answer-value p-{{percent}}\">{{key}}: {{percent}}%</span>\n\t\t\t\t</li>\n\t\t\t{{/each}}\n\t\t</ul>\n\t{{/isCheckbox}}\n\n\t{{#isShortAnswer this.model.type}}\n\t\t<ul>\n\t\t\t{{#each model.answers}}\n\t\t\t\t<li class=\"answer-block\" data-id=\"{{id}}\">\n\t\t\t\t\t<span class=\"answer-bar p-100\"></span>\n\t\t\t\t\t<span class=\"answer-value p-100\">{{value}}<span class=\"fa fa-remove remove-answer\"></span></span>\n\t\t\t\t</li>\n\t\t\t{{/each}}\n\t\t</ul>\n\t{{/isShortAnswer}}\n\n\t{{#is this.model.type 'go'}}\n\t\n\t\t<div class=\"two-thirds fl\">\n\t\t\t<h3>Participants ({{model.answers.length}})</h3>\n\t\t\t<ul class=\"participant-list\">\n\t\t\t\t{{#each model.answers}}\n\t\t\t\t\t<li draggable=\"true\" class=\"answer-block\" data-id=\"{{id}}\">\n\t\t\t\t\t\t<span class=\"answer-bar p-100\"></span>\n\t\t\t\t\t\t<span class=\"answer-value p-100\">{{value}}</span>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\t\n\t\t</div>\n\t\t<div class=\"one-third fl\">\n\t\t\t<h3>Groups</h3>\n\t\t\t<div class=\"group-controls\">\n\t\t\t\t<div class=\"group-count\">\n\t\t\t\t\tNumber of groups: <input type=\"text\" name=\"group-count\" value=\"{{model.groups.length}}\">\n\t\t\t\t</div>\n\t\t\t\t<button class=\"button small randomize-groups\"><span class=\"fa fa-random\"></span> Randomize Members</button>\n\t\t\t\t<button class=\"remove-all-member button small\"><span class=\"fa fa-remove\"></span> Remove all Members</button>\n\t\t\t\t<button class=\"button small green publish-groups\"><span class=\"fa fa-bullhorn\"></span> Publish Groups</button>\n\t\t\t</div>\n\t\t\t<ul class=\"groups\">\n\t\t\t\t{{#each model.groups.models}}\n\t\t\t\t\t<li data-id=\"{{id}}\" class=\"drag-target group\">\n\t\t\t\t\t\t<span class=\"group-desc\">Group: </span>\n\t\t\t\t\t\t<span class=\"group-name\">{{name}}</span>\n\t\t\t\t\t\t<ul class=\"members\">\n\t\t\t\t\t\t\t{{#each members}}\n\t\t\t\t\t\t\t<li data-id=\"{{id}}\" class=\"member\">{{value}}<span class=\"fa fa-remove remove-member \"></span></li>\n\t\t\t\t\t\t\t{{/each}}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t</div>\n\t\t<div class=\"cf\"></div>\n\n\t{{/is}}\n\n\n\t\t\n</div>\n";
+module.exports = "<div class=\"question-detail\">\n\n\t{{#isCheckbox this.model.type}}\n\t\t<ul>\n\t\t\t{{#each model.preparedAnswers}}\n\t\t\t\t<li class=\"answer-block\">\n\t\t\t\t\t<span class=\"answer-bar p-{{percent}}\"></span>\n\t\t\t\t\t<span class=\"answer-value p-{{percent}}\">{{key}}: {{percent}}%</span>\n\t\t\t\t</li>\n\t\t\t{{/each}}\n\t\t</ul>\n\t{{/isCheckbox}}\n\n\t{{#isShortAnswer this.model.type}}\n\t\t<div class=\"two-thirds fl\">\n\t\t\t<h3>Answers ({{model.answers.length}})</h3>\n\t\t\t<ul class=\"participant-list\">\n\t\t\t\t{{#each model.answers}}\n\t\t\t\t\t<li draggable=\"true\" class=\"answer-block\" data-id=\"{{id}}\">\n\t\t\t\t\t\t<span class=\"answer-bar p-100\"></span>\n\t\t\t\t\t\t<span class=\"answer-value p-100\">{{value}}</span>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\t\n\t\t</div>\n\t\t<div class=\"one-third fl\">\n\t\t\t<h3>Groups</h3>\n\t\t\t<div class=\"group-controls\">\n\t\t\t\t<div class=\"group-count\">\n\t\t\t\t\tNumber of groups: <input type=\"text\" name=\"group-count\" value=\"{{model.groups.length}}\">\n\t\t\t\t</div>\n\t\t\t\t<button class=\"remove-all-member button small\"><span class=\"fa fa-remove\"></span> Remove all Members</button>\n\t\t\t</div>\n\t\t\t<ul class=\"groups\">\n\t\t\t\t{{#each model.groups.models}}\n\t\t\t\t\t<li data-id=\"{{id}}\" class=\"drag-target group\">\n\t\t\t\t\t\t<span class=\"group-desc\">Group: </span>\n\t\t\t\t\t\t<span class=\"group-name\">{{name}}</span>\n\t\t\t\t\t\t<ul class=\"members\">\n\t\t\t\t\t\t\t{{#each members}}\n\t\t\t\t\t\t\t<li data-id=\"{{id}}\" class=\"member\">{{value}}<span class=\"fa fa-remove remove-member \"></span></li>\n\t\t\t\t\t\t\t{{/each}}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t</div>\n\t\t<div class=\"cf\"></div>\n\t{{/isShortAnswer}}\n\n\t{{#is this.model.type 'go'}}\n\t\n\t\t<div class=\"two-thirds fl\">\n\t\t\t<h3>Participants ({{model.answers.length}})</h3>\n\t\t\t<ul class=\"participant-list\">\n\t\t\t\t{{#each model.answers}}\n\t\t\t\t\t<li draggable=\"true\" class=\"answer-block\" data-id=\"{{id}}\">\n\t\t\t\t\t\t<span class=\"answer-bar p-100\"></span>\n\t\t\t\t\t\t<span class=\"answer-value p-100\">{{value}}</span>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\t\n\t\t</div>\n\t\t<div class=\"one-third fl\">\n\t\t\t<h3>Groups</h3>\n\t\t\t<div class=\"group-controls\">\n\t\t\t\t<div class=\"group-count\">\n\t\t\t\t\tNumber of groups: <input type=\"text\" name=\"group-count\" value=\"{{model.groups.length}}\">\n\t\t\t\t</div>\n\t\t\t\t<button class=\"button small randomize-groups\"><span class=\"fa fa-random\"></span> Randomize Members</button>\n\t\t\t\t<button class=\"remove-all-member button small\"><span class=\"fa fa-remove\"></span> Remove all Members</button>\n\t\t\t\t<button class=\"button small green publish-groups\"><span class=\"fa fa-bullhorn\"></span> Publish Groups</button>\n\t\t\t</div>\n\t\t\t<ul class=\"groups\">\n\t\t\t\t{{#each model.groups.models}}\n\t\t\t\t\t<li data-id=\"{{id}}\" class=\"drag-target group\">\n\t\t\t\t\t\t<span class=\"group-desc\">Group: </span>\n\t\t\t\t\t\t<span class=\"group-name\">{{name}}</span>\n\t\t\t\t\t\t<ul class=\"members\">\n\t\t\t\t\t\t\t{{#each members}}\n\t\t\t\t\t\t\t<li data-id=\"{{id}}\" class=\"member\">{{value}}<span class=\"fa fa-remove remove-member \"></span></li>\n\t\t\t\t\t\t\t{{/each}}\n\t\t\t\t\t\t</ul>\n\t\t\t\t\t</li>\n\t\t\t\t{{/each}}\n\t\t\t</ul>\n\t\t</div>\n\t\t<div class=\"cf\"></div>\n\n\t{{/is}}\n\n\n\t\t\n</div>\n";
 
 },{}],212:[function(require,module,exports){
 module.exports = "<div id=\"show-question\">\n\t<h3>Show Question</h3>\n\t\n\t<div class=\"form-wrap\">\n\t\t<label for=\"show-question-model-question\">Question:</label><input disabled type=\"text\" id=\"show-question-model-question\" data-hook=\"question\" value=\"why it this\">\n\t</div>\n\n\t<div class=\"question-detail\">\n\t\t{{#unless config.isAdmin}}\n\t\t\t{{#is this.model.hasAnswered false}}\n\n\t\t\t\t{{#is this.model.type 'mc'}}\n\t\t\t\t\t{{#each model.acceptedOptions}}\n\t\t\t\t\t\t<div class=\"form-wrap mc\">\n\t\t\t\t\t\t\t<input type=\"radio\"  name=\"question\" id=\"mc-answer-{{value}}\" value=\"{{value}}\" class=\"mc-answer\"><label for=\"mc-answer-{{value}}\">{{value}}</label>\t\t\t\t\t\t\t\n\t\t\t\t\t\t</div>\n\t\t\t\t\t{{/each}}\n\t\t\t\t{{/is}}\n\n\t\t\t\t{{#is this.model.type 'bool'}}\n\t\t\t\t\t<input type=\"radio\" name=\"question\" id=\"question-bool-true\" value=\"true\"> <label for=\"question-bool-true\">True</label>\n\t\t\t\t\t<input type=\"radio\" name=\"question\" id=\"question-bool-false\" value=\"false\"><label for=\"question-bool-false\">False</label>\n\t\t\t\t{{/is}}\n\n\t\t\t\t{{#is this.model.type 'sa'}}\n\t\t\t\t\t<div class=\"form-wrap\">\n\t\t\t\t\t\t<label for=\"question-sa\">Your answer:</label><input id=\"question-sa\" name=\"question\" type=\"text\" >\n\t\t\t\t\t</div>\n\t\t\t\t{{/is}}\n\n\t\t\t\t{{#is this.model.type 'go'}}\n\t\t\t\t\t<div class=\"form-wrap\">\n\t\t\t\t\t\t<label for=\"question-sa\">Your name:</label><input id=\"question-sa\" name=\"question\" type=\"text\" >\n\t\t\t\t\t</div>\n\t\t\t\t{{/is}}\n\n\t\t\t\t<button class=\"button submit-answer\">submit</button>\n\n\t\t\t{{else}}\n\t\t\t\t{{#if this.model.assignedGroup}}\n\t\t\t\t\tYour Group: &quot;{{this.model.assignedGroup}}&quot;\n\t\t\t\t{{else}}\n\t\t\t\t\t<h3>you already participated</h3>\n\t\t\t\t{{/if}}\n\t\t\t{{/is}}\n\t\t{{/unless}}\n\t</div>\t\n\n</div>";
@@ -32107,7 +32102,7 @@ var GroupOrganization = BaseView.extend({
 		'click .remove-all-member': 'removeAllMembers',
 		'click .publish-groups': 'publishGroups',
 		'click .group-name': 'changeGroupName',
-		'keyup .group-count': 'changeGroupCount',
+		'change .group-count': 'changeGroupCount',
 		'click .randomize-groups': 'randomizeGroups',
 		// d&d events
 		'dragstart li[draggable]': 'dragStart',
@@ -32321,11 +32316,12 @@ var GroupOrganization = BaseView.extend({
 		$('#change-group-name').keyup(function(e){
 			var $li = $(e.currentTarget).closest('li'),
 				GroupId = $li.attr('data-id'),
+				val = $(this).val(),
 				group = self.model.groups.get(GroupId);
 
 			// ENTER
-			if ( e.keyCode == 13 ){
-				group.name = $(this).val();
+			if ( e.keyCode == 13 && val.trim() ){
+				group.name = val;
 				closeField();
 			// ESC
 			}else if( e.keyCode == 27 ){

@@ -1,5 +1,4 @@
 var _ = require('lodash'),
-	uuid = require('lib/uuid.js'),
 	BaseCollection = require('ampersand-collection'),
 	GroupModel = require('models/group.js');
 
@@ -17,25 +16,19 @@ module.exports = BaseCollection.extend({
 		// new count greater than current
 		if( diff <= 0 ){
 			for(var i = diff; i<0; i++){
-				var uid = uuid();
 				this.add(new GroupModel({
-					name: uid
+					name: "group-name"
 				}));
 			}
 		// new count smaller the current
 		}else{
-			// reset all models
-			this.models = [];
-
-			for( var i = 0; i < val; i++ ){
-				var uid = uuid();
-				this.add(new GroupModel({
-					name: uid
-				}));
-			}
+			// reset all models' members
+			// and remove obsolete groups
+			_.remove(this.models, function(model, index){
+				model.members = [];
+				return index >= val;
+			});
 		}
-
-		
 	},
 
 	removeAllMembers: function(){

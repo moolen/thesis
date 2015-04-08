@@ -12,6 +12,8 @@ var QuestionModel = State.extend({
 	},
 	
 	initialize: function(props){
+		props = props || {};
+		
 		if(!props.members)
 			this.members = [];
 		if(!props.id)

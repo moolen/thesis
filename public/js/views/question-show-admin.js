@@ -16,7 +16,7 @@ var GroupOrganization = BaseView.extend({
 		'click .remove-all-member': 'removeAllMembers',
 		'click .publish-groups': 'publishGroups',
 		'click .group-name': 'changeGroupName',
-		'keyup .group-count': 'changeGroupCount',
+		'change .group-count': 'changeGroupCount',
 		'click .randomize-groups': 'randomizeGroups',
 		// d&d events
 		'dragstart li[draggable]': 'dragStart',
@@ -230,11 +230,12 @@ var GroupOrganization = BaseView.extend({
 		$('#change-group-name').keyup(function(e){
 			var $li = $(e.currentTarget).closest('li'),
 				GroupId = $li.attr('data-id'),
+				val = $(this).val(),
 				group = self.model.groups.get(GroupId);
 
 			// ENTER
-			if ( e.keyCode == 13 ){
-				group.name = $(this).val();
+			if ( e.keyCode == 13 && val.trim() ){
+				group.name = val;
 				closeField();
 			// ESC
 			}else if( e.keyCode == 27 ){
