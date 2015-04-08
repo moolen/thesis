@@ -27,6 +27,8 @@ gulp.task('less', function(){
 		.pipe(gulp.dest('./public/styles/'));
 });
 
+gulp.task('build', ['browserify', 'less']);
+
 gulp.task('watch', function(){
 
 	gulp.watch([
