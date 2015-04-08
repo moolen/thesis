@@ -32045,7 +32045,7 @@ var ListItem = BaseView.extend({
 
 	showQuestion: function(){
 		// this -> collection-view -> list-view -> removeHighlight
-		this.parent.parent.removeHighlight();
+		this.parent.removeHighlight();
 		if(!this.model.highlight){
 			this.model.highlight = 'active';
 		}
@@ -32055,6 +32055,7 @@ var ListItem = BaseView.extend({
 });
 
 module.exports = ListItem;
+
 },{"ampersand-app":2,"ampersand-view":91,"handlebars.js":214,"jquery.js":216,"templates/question-list-item.hbs":209}],219:[function(require,module,exports){
 var $ = require('jquery.js'),
 	ListItem = require('views/question-list-item.js'),

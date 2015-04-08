@@ -1,11 +1,12 @@
 var token = require('../lib/token.js'),
+	config = require('../config.js'),
 	socketNamespace = require('../lib/socket-namespace.js');
 
 var sessionRoute = function(req, res){
 	
 	// fetch session from storage
 	var session = req.session.get(req.params.session),
-		url = req.protocol + '://' + req.get('host');
+		url = req.protocol + '://' + config.domain;
 
 	// case: session exists
 	if(session){

@@ -16,7 +16,7 @@ var ListItem = BaseView.extend({
 
 	showQuestion: function(){
 		// this -> collection-view -> list-view -> removeHighlight
-		this.parent.parent.removeHighlight();
+		this.parent.removeHighlight();
 		if(!this.model.highlight){
 			this.model.highlight = 'active';
 		}
