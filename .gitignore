@@ -1,3 +1,4 @@
 node_modules/
 config.js
 public/js/build/*
+rethinkdb_data/
