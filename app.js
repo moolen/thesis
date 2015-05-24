@@ -3,7 +3,7 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     auth = require('./lib/authentication.js'),
     sessionStorage = require('./lib/session-adapter.js')
-      .setOptions('memory')
+      .setOptions('rethinkdb')
       .initialize(),
     handlebars = require('express-handlebars'),
     less = require('express-less-middleware')(),
@@ -27,7 +27,7 @@ app.use(routes);
 server = app.listen(config.port, config.domain, function () {
   var host = server.address().address
   var port = server.address().port
-  console.log('Example app listening at http://%s:%s', host, port)
+  console.log('WhiteDesk listening at http://%s:%s', host, port)
 });
 
 io = socketio(server);

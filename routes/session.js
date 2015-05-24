@@ -4,31 +4,31 @@ var token = require('../lib/token.js'),
 
 var sessionRoute = function(req, res){
 	
+	var	url = req.protocol + '://' + config.domain;
+
 	// fetch session from storage
-	var session = req.session.get(req.params.session),
-		url = req.protocol + '://' + config.domain;
+	req.session.get(req.params.session).then(function(session){
+		// case: session exists
+		if(session){
+			
+			if( !req.isAdmin && !req.signedCookies['user-token'] ){
+				res.cookie('user-token', token(24), {
+					signed: true,
+					path: '/' + req.params.session
+				});
+			}
 
-	// case: session exists
-	if(session){
-		
-		if( !req.isAdmin && !req.signedCookies['user-token'] ){
-			res.cookie('user-token', token(24), {
-				signed: true,
-				path: '/' + req.params.session
+			res.render( 'session', {
+				session: session,
+				layout: 'session',
+				isAdmin: req.isAdmin,
+				url: url
 			});
+		// case: session does not exist
+		}else{
+			res.redirect('/');
 		}
-
-		res.render( 'session', {
-			session: session,
-			layout: 'session',
-			isAdmin: req.isAdmin,
-			url: url
-		});
-	// case: session does not exist
-	}else{
-		res.redirect('/');
-	}
-	
+	});
 };
 
 var createSessionRoute = function(req, res){

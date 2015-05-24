@@ -106,7 +106,7 @@ var Application = App.extend({
 	 */
 	initialize: function(){
 
-		this.socket = io.connect( this.config.url + '/' + this.config.room);
+		this.socket = io('/' + this.config.room);
 		
 		this.models.usercount = new UsercountModel({count: 0}, { socket: this.socket });
 		
