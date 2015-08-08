@@ -1,5 +1,5 @@
 var $ = require('jquery.js'),
-	ListItem = require('views/question-list-item.js'),
+	ListItem = require('views/question-show.js'),
 	BaseView = require('ampersand-view'),
 	handlebars = require('handlebars.js'),
 	template = require('templates/question-list.hbs');

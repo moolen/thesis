@@ -12,31 +12,53 @@
     </script>
 </head>
 <body>
-
-	<div id="top-bar">
-        <h1 class="name"><a href="/">{{i18n.NAME}}</a> <span class="small">| {{i18n.TITLE}}</span></h1>
-	</div>
+    <nav>
+        <div class="nav-wrapper red lighten-2">
+            <div class="input-field">
+                <input id="search" type="search" required>
+                <label for="search"><i class="material-icons">search</i></label>
+            </div>
+        </div>
+    </nav>
     <span class="user-count-view"></span>
- 	<div id="content" class="session">
-	    {{{body}}}
+    <div id="content" class="session container">
+        {{{body}}}
         <div id="app">
-        
             <div id="left-nav">
                 {{#if isAdmin}}
-                <button class="black button create-question"><span class="fa fa-plus"></span> Question</button>
+                <div class="fixed-action-btn create-question" style="bottom: 45px; right: 24px;">
+                    <a class="btn-floating btn-large red">
+                        <i class="large material-icons">mode_edit</i>
+                    </a>
+                    <ul>
+                        <li>
+                            <a class="btn-floating red" title="Yes/No" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;">
+                                <div class="multiple-icon-wrap">
+                                    <i class="material-icons first">done</i>
+                                    <i class="material-icons">close</i>
+                                </div>
+                            </a>
+                        </li>
+                        <li><a class="btn-floating green" title="group" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;"><i class="material-icons">supervisor_account</i></a></li>
+                        <li><a class="btn-floating yellow darken-4" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;"><i class="material-icons">reorder</i></a></li>
+                        <li>
+                            <a class="btn-floating blue" title="multiple choice" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;">
+                                <i id="menu-multiple-choice" class="icon-mirrored material-icons">toc</i>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
                 {{/if}}
                 <div id="question-list-view"></div>
             </div>
-        
             <div id="main">
-                <div id="create-question"></div>            
+                <div id="create-question-view"></div>            
                 <div id="show-question"></div>
             </div>
-
             <div class="cf"></div>
-        
         </div>
- 	</div>
+    </div>
     <script src="/js/build/bundle.js"></script>
+    <script src="/js/vendor/materialize.js"></script>
 </body>
 </html>

@@ -1,6 +1,9 @@
 
 var $ = require('./vendor/jquery.js'),
-	Application = require('./application.js');
+    Application = require('./application.js');
+
+window.$ = $;
+window.jQuery = $;
 
 Application.initialize();
 

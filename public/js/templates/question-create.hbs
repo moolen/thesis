@@ -1,29 +1,46 @@
-<div id="create-question">
-	<h3>Create Question</h3>
-	
-	<div class="form-wrap">
-		<label for="question">Question:</label><input type="text" id="question" data-hook="question" value="{{model.question}}" placeholder="Your question">
-	</div>
-	<div class="form-wrap">
-		<label for="question-type">Type</label><select name="question-type" data-hook="type" id="question-type">
-			<option selected value=""></option>
-			<option value="mc">multiple choice</option>
-			<option value="bool">true / false</option>
-			<option value="sa">short answer</option>
-			<option value="go">group organization</option>
-		</select>
-	</div>
+<div id="create-question-view">
+    <div class="row">
+        <div class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" id="question" data-hook="question" value="{{model.question}}" placeholder="Your question">
+                    <label class="{{this.inputHighlight}}" for="question">Question:</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <select class="" name="question-type" data-hook="type" id="question-type">
+                        <option class="default" selected value="">choose your type</option>
+                        <option value="mc">multiple choice</option>
+                        <option value="bool">true / false</option>
+                        <option value="sa">short answer</option>
+                        <option value="go">group organization</option>
+                    </select>
+                    <label for="question-type">Type</label>
+                </div>
+            </div>
 
-	{{#is model.type  'mc'}}
-		<div class="form-wrap">
-			{{#each model.acceptedOptions}}
-				<div class="row-wrap">
-					<label for="">option:</label><input type="text" class="mc-answer" value="{{value}}"placeholder="yes, but actually not.">
-				</div>
-			{{/each}}
-			
-			<button class="button add-option">add option</button>
-		</div>
-	{{/is}}
-	<button data-trigger="create" class="button save-question">create</button>
+            {{#is model.type  'mc'}}
+                <div class="row">
+                    <div class="input-field col s12">
+                        <h6>Enter your multiple-choice options below:</h6>
+                        <div class="collection">
+                            {{#each model.acceptedOptions}}
+                                    <div class="collection-item">
+                                        <input type="text" class="mc-answer" value="{{value}}" placeholder="type your option">    
+                                    </div>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn add-option">add option</button>
+                </div>
+            {{/is}}
+
+            <div class="row">
+                <button data-trigger="create" class="btn red lighten-3 save-question">create</button>
+            </div>
+        </div>
+    </div>
 </div>

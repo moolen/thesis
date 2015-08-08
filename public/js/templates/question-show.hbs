@@ -1,49 +1,58 @@
-<div id="show-question">
-	<h3>Show Question</h3>
-	
-	<div class="form-wrap">
-		<label for="show-question-model-question">Question:</label><input disabled type="text" id="show-question-model-question" data-hook="question" value="why it this">
-	</div>
+<div class="card darken-1">
+    <div class="card-content black-text">
+        <span class="card-title black-text">
+            {{model.question}}
+        </span>
+        {{#unless this.config.isAdmin }}
+            {{#is this.model.hasAnswered false}}
+                <div class="row">
+                    <div class="input-field col s12">
+                        {{#is this.model.type 'mc'}}
+                            {{#each model.acceptedOptions}}
+                                <p>
+                                    <input type="radio"  name="question" id="mc-answer-{{value}}" value="{{value}}" class="mc-answer">
+                                    <label for="mc-answer-{{value}}">{{value}}</label>    
+                                </p>
+                            {{/each}}
+                        {{/is}}
 
-	<div class="question-detail">
-		{{#unless config.isAdmin}}
-			{{#is this.model.hasAnswered false}}
+                        {{#is this.model.type 'bool'}}
+                            <p>
+                                <input type="radio" name="question" id="question-bool-true" value="true">
+                                <label for="question-bool-true">True</label>    
+                            </p>
+                            <p>
+                                <input type="radio" name="question" id="question-bool-false" value="false">
+                                <label for="question-bool-false">False</label>    
+                            </p>
+                        {{/is}}
 
-				{{#is this.model.type 'mc'}}
-					{{#each model.acceptedOptions}}
-						<div class="form-wrap mc">
-							<input type="radio"  name="question" id="mc-answer-{{value}}" value="{{value}}" class="mc-answer"><label for="mc-answer-{{value}}">{{value}}</label>							
-						</div>
-					{{/each}}
-				{{/is}}
+                        {{#is this.model.type 'sa'}}
+                            <p>
+                                <label for="question-sa">Your answer:</label>
+                                <input id="question-sa" name="question" type="text" >    
+                            </p>
+                        {{/is}}
 
-				{{#is this.model.type 'bool'}}
-					<input type="radio" name="question" id="question-bool-true" value="true"> <label for="question-bool-true">True</label>
-					<input type="radio" name="question" id="question-bool-false" value="false"><label for="question-bool-false">False</label>
-				{{/is}}
-
-				{{#is this.model.type 'sa'}}
-					<div class="form-wrap">
-						<label for="question-sa">Your answer:</label><input id="question-sa" name="question" type="text" >
-					</div>
-				{{/is}}
-
-				{{#is this.model.type 'go'}}
-					<div class="form-wrap">
-						<label for="question-sa">Your name:</label><input id="question-sa" name="question" type="text" >
-					</div>
-				{{/is}}
-
-				<button class="button submit-answer">submit</button>
-
-			{{else}}
-				{{#if this.model.assignedGroup}}
-					Your Group: &quot;{{this.model.assignedGroup}}&quot;
-				{{else}}
-					<h3>you already participated</h3>
-				{{/if}}
-			{{/is}}
-		{{/unless}}
-	</div>	
-
+                        {{#is this.model.type 'go'}}
+                            <p>
+                                <label for="question-sa">Your name:</label><input id="question-sa" name="question" type="text" >    
+                            </p>
+                        {{/is}}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col s12">
+                        <button class="btn red lighten-3 waves-effect waves- light submit-answer">submit</button>
+                    </div>
+                </div>
+            {{else}}
+                {{#if this.model.assignedGroup}}
+                    Your Group: &quot;{{this.model.assignedGroup}}&quot;
+                {{else}}
+                    <h6>you already participated</h6>
+                {{/if}}
+            {{/is}}
+        {{/unless}}
+    </div>
 </div>

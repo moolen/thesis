@@ -87,13 +87,13 @@ var Application = App.extend({
 	 * viewSwitcher
 	 * - toggles showQuestion | createQuestion views
 	 */
-	viewSwitcher: new ViewSwitcher( $('#main')[0] ),
+	viewSwitcher: new ViewSwitcher( $('#main')[0]),
 
 	/**
 	 * our Application Router
 	 * @type {ampersand-router}
 	 */
-	router: new Router,
+	router: new Router(),
 
 	/**
 	 * initialize:
@@ -191,7 +191,7 @@ var Application = App.extend({
 		if( this.config.isAdmin ){
 			this.views.questionList.removeHighlight();
 			return this.viewSwitcher.set( new CreateQuestionView({
-				el: $('#create-question')[0],
+				el: $('#create-question-view')[0],
 				collection: this.collections.questionCollection
 			}));
 		}
@@ -215,7 +215,6 @@ var Application = App.extend({
 			// set view
 			return this.viewSwitcher.set( new ShowQuestionView({
 				model: model,
-				config: this.config,
 				el: $('#show-question')[0]
 			}));
 		}

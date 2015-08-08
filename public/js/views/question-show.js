@@ -26,7 +26,7 @@ var ShowQuestion = BaseView.extend({
 	},
 
 	initialize: function(options){
-		this.config = options.config;
+		this.config = app.config;
 		this.model.on('change', this.render.bind(this));
 		app.router.navigate('question/' + this.model.id);
 	},
@@ -47,6 +47,7 @@ var ShowQuestion = BaseView.extend({
 				'.question-detail'
 			);
 		}
+		$(this.el).find('select').material_select();
 		return this;
 	},
 
@@ -60,10 +61,10 @@ var ShowQuestion = BaseView.extend({
 		var $el, val;
 
 		if( this.model.type == 'sa' || this.model.type == 'go' ){
-			$el = $('input[name="question"]');
+			$el = $(this.el).find('input[name="question"]');
 			val = $el.val();
 		}else{
-			$el = $('input[name="question"]:checked');
+			$el = $(this.el).find('input[name="question"]:checked');
 			val = $el.val();
 		}
 

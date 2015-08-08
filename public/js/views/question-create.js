@@ -1,107 +1,141 @@
 var $ = require('jquery.js'),
-	_ = require('lodash'),
-	app = require('ampersand-app'),
-	QuestionModel = require('models/question.js'),
-	BaseView = require('ampersand-view'),
-	handlebars = require('handlebars.js'),
-	template = require('templates/question-create.hbs');
+    _ = require('lodash'),
+    app = require('ampersand-app'),
+    QuestionModel = require('models/question.js'),
+    BaseView = require('ampersand-view'),
+    handlebars = require('handlebars.js'),
+    template = require('templates/question-create.hbs');
 
 var CreateQuestion = BaseView.extend({
-	
-	autoRender: true,
+    
+    autoRender: true,
 
-	template: handlebars.compile(template),
+    template: handlebars.compile(template),
+    inputHighlight: false,
 
-	bindings: {
-		'model.type': {
-			type: 'value',
-			hook: 'type'
-		}
-	},
+    bindings: {
+        'model.type': {
+            type: 'value',
+            hook: 'type'
+        }
+    },
 
-	events: {
-		'change #question-type': 'updateQuestionType',
-		'click .add-option': 'addOption',
-		'click [data-trigger="create"]': 'save'
-	},
+    events: {
+        // 'change #question-type': 'updateQuestionType',
+        'click .add-option': 'addOption',
+        'keydown .mc-answer': 'answerKeyUp',
+        'click [data-trigger="create"]': 'save'
+    },
 
-	initialize: function(options){
-		this.model = new QuestionModel();
-		this.model.on('change', this.render.bind(this));
-		app.router.navigate('question/new');
-	},
+    initialize: function(options){
+        this.model = new QuestionModel();
+        this.model.on('change', this.render.bind(this));
+        app.router.navigate('question/new');
+    },
 
-	updateQuestionType: function(){
-		var val = $(this.el).find('[data-hook="type"]').val(),
-			question = $(this.el).find('[data-hook="question"]').val();
-		
-		this.model.question = question;
-		this.model.type = val;
-	},
+    updateQuestionType: function(){
+        var val = $(this.el).find('[data-hook="type"]').val(),
+            question = $(this.el).find('[data-hook="question"]').val(),
+            opts = this.getAcceptedOptions();
+        
+        this.model.question = question;
+        this.model.type = val;
 
-	getQuestion: function(){
-		return $(this.el).find('[data-hook="question"]').val()
-	},
+        if( opts && opts.length === 0 && val === 'mc' ){
+            this.addOption();
+        }
 
-	getAcceptedOptions: function(){
-		var options = [];
-		
-		_.each($('.mc-answer'), function(node){
-			options.push({
-				value: $(node).val()
-			});
-		});
+    },
 
-		return _.filter(options, function(el){ return el.value !== "" });
-	},
+    getQuestion: function(){
+        return $(this.el).find('[data-hook="question"]').val();
+    },
 
-	addOption: function(){
-		this.model.question = this.getQuestion();
-		this.model.acceptedOptions = this.getAcceptedOptions();
+    getAcceptedOptions: function(){
+        var options = [];
+        
+        _.each($('.mc-answer'), function(node){
+            options.push({
+                value: $(node).val()
+            });
+        });
 
-		this.model.incrementAcceptedOptions();
-		this.render();
-	},
+        return _.filter(options, function(el){ return el.value !== ""; });
+    },
 
-	save: function(){
-		var question = $(this.el).find('[data-hook="question"]').val();
-		// @todo find answers, remove duplicates and set em on the model
-		var acceptedOptions = this.getAcceptedOptions();
-		var type = $(this.el).find('[data-hook="type"]').val();
+    addOption: function(){
+        this.model.question = this.getQuestion();
+        this.model.acceptedOptions = this.getAcceptedOptions();
 
-		this.clearErrors();
-		
-		if(type)
-			this.model.type = type;
+        this.model.incrementAcceptedOptions();
+        this.render();
 
-		if(question)
-			this.model.question = question;
+        var $new = $(this.el).find('.mc-answer').last();
 
-		if(acceptedOptions)
-			this.model.acceptedOptions = acceptedOptions;
+        setTimeout(function(){
+            $new.focus();
+        }, 0);
+    },
 
-		if( this.model.isValid() ){
-			this.collection.addModel( this.model );
-			app.trigger( app.events.NEW_QUESTION );
-			app.router.redirectTo('question/' + this.model.id);
-		}else{
-			for( var key in this.model.validationError){
-				this.queryByHook(key)
-					.classList.add('error');
-			}
-		}
+    answerKeyUp: function(e){
+        if( e.which === 9 ){
+            this.addOption();
+        }
+    },
 
-	},
+    save: function(){
+        var question = $(this.el).find('[data-hook="question"]').val();
+        // @todo find answers, remove duplicates and set em on the model
+        var acceptedOptions = this.getAcceptedOptions();
+        var type = $(this.el).find('[data-hook="type"]').val();
 
-	clearErrors: function(){
-		this.queryByHook('question').classList.remove('error');
-		this.queryByHook('type').classList.remove('error');
-	},
+        this.clearErrors();
+        
+        if(type)
+            this.model.type = type;
 
-	render: function(){
-		this.renderWithTemplate();
-		return this;
-	}
+        if(question)
+            this.model.question = question;
+
+        if(acceptedOptions)
+            this.model.acceptedOptions = acceptedOptions;
+
+        if( this.model.isValid() ){
+            this.collection.addModel( this.model );
+            app.trigger( app.events.NEW_QUESTION );
+            app.router.redirectTo('question/' + this.model.id);
+            this.remove();
+        }else{
+            for( var key in this.model.validationError){
+                this.queryByHook(key)
+                    .classList.add('invalid');
+            }
+        }
+
+    },
+
+    clearErrors: function(){
+        this.queryByHook('question').classList.remove('invalid');
+        this.queryByHook('type').classList.remove('invalid');
+    },
+
+    render: function(){
+        this.renderWithTemplate();
+        var $select = $(this.el).find('select'),
+            $input = $(this.el).find('input').first(),
+            $label = $input.next('label'),
+            $type = $(this.el).find('#question-type');
+
+        $select.material_select();
+        $type.change(_.bind(this.updateQuestionType, this));
+        if( !this.inputHighlight ){
+            this.inputHighlight = 'active';
+            setTimeout(function(){
+                $input.focus();
+            }, 0);
+        }
+        return this;
+    }
 });
 
 module.exports = CreateQuestion;
