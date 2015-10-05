@@ -1,5 +1,6 @@
 var $ = require('jquery.js'),
 	ListItem = require('views/question-show.js'),
+	app = require('ampersand-app'),
 	BaseView = require('ampersand-view'),
 	handlebars = require('handlebars.js'),
 	template = require('templates/question-list.hbs');
@@ -7,7 +8,9 @@ var $ = require('jquery.js'),
 var QuestionList = BaseView.extend({
 	template: handlebars.compile(template),
 	
-	initialize: function(options){},
+	initialize: function(options){
+		this.config = app.config;
+	},
 
 	render: function(){
 		this.renderWithTemplate();
@@ -16,11 +19,25 @@ var QuestionList = BaseView.extend({
 			ListItem,
 			'.question-list'
 		);
+
 		return this;
 	},
 
-	removeHighlight: function(){
-		this.collection.removeHighlight();
+	hide: function(){
+		var $el = $(this.el).find('.question-list');
+
+		$el.addClass('animate-top');
+		$el.animate({ height: 0}, 700, function(){
+			$(this).hide();
+		});
+
+	},
+
+	show: function(){
+		var $el = $(this.el).find('.question-list');
+		$el.show();
+		$el.removeClass('animate-top');
+		$el.css('height', 'auto');
 	}
 });
 

@@ -2,7 +2,6 @@ html, body{
     padding:0;
     margin:0;
     height: 100%;
-    //font-family: "Lato" sans-serif;
 
 }
 
@@ -10,8 +9,68 @@ html, body{
   min-height: 100%;
 }
 
+.nav-wrapper{
+  z-index: 1000;
+  position: relative;
+}
+
 .user-count-view{
   display: none;
+}
+
+.right-menu{
+  position: absolute;
+  top:0;
+  right:0;
+}
+#more-dropdown{
+  width: 140px !important;
+}
+
+.delete-question{
+  position: absolute;
+  top:.33em;
+  right: .33em;
+  cursor: pointer;
+}
+
+#create-question-view{
+    padding-top: 2em;
+}
+
+.admin-content{
+  border: 1px solid #eee;
+  .badge{
+    position: static;
+    display: inline-block;
+    margin: .2em;
+  }
+}
+
+.card-type{
+  display: block;
+  float: left;
+  line-height: 48px;
+  margin-right: 9px;
+}
+
+.nm-top{
+  margin-top: 0 !important;
+}
+
+.answer-value{
+  cursor: pointer;
+}
+
+.drag-enter{
+  background: red;
+}
+
+.collection.answer-collection{
+  border:0;
+  li{
+    border:0;
+  }
 }
 
 [draggable] {
@@ -22,5 +81,15 @@ html, body{
   /* Required to make elements draggable in old WebKit */
   -khtml-user-drag: element;
   -webkit-user-drag: element;
+}
+
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
 }
 

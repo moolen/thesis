@@ -8,7 +8,7 @@ var $ = require('jquery.js'),
 
 var ShowQuestion = BaseView.extend({
 
-	autoRender: true,
+	autoRender: false,
 
 	dragSourceId: null,
 
@@ -46,6 +46,9 @@ var ShowQuestion = BaseView.extend({
 				}),
 				'.question-detail'
 			);
+			// disable all question-inputs for admin
+			$(this.el).find('.question-content input')
+				.attr('disabled', 'disabled');
 		}
 		$(this.el).find('select').material_select();
 		return this;

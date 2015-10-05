@@ -9040,8 +9040,58 @@ body {
 #content {
   min-height: 100%;
 }
+.nav-wrapper {
+  z-index: 1000;
+  position: relative;
+}
 .user-count-view {
   display: none;
+}
+.right-menu {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+#more-dropdown {
+  width: 140px !important;
+}
+.delete-question {
+  position: absolute;
+  top: .33em;
+  right: .33em;
+  cursor: pointer;
+}
+#create-question-view {
+  padding-top: 2em;
+}
+.admin-content {
+  border: 1px solid #eee;
+}
+.admin-content .badge {
+  position: static;
+  display: inline-block;
+  margin: .2em;
+}
+.card-type {
+  display: block;
+  float: left;
+  line-height: 48px;
+  margin-right: 9px;
+}
+.nm-top {
+  margin-top: 0 !important;
+}
+.answer-value {
+  cursor: pointer;
+}
+.drag-enter {
+  background: red;
+}
+.collection.answer-collection {
+  border: 0;
+}
+.collection.answer-collection li {
+  border: 0;
 }
 [draggable] {
   -moz-user-select: none;
@@ -9051,6 +9101,23 @@ body {
   /* Required to make elements draggable in old WebKit */
   -khtml-user-drag: element;
   -webkit-user-drag: element;
+}
+.node {
+  stroke: #fff;
+  stroke-width: 1.5px;
+}
+.link {
+  stroke: #999;
+  stroke-opacity: .6;
+}
+.question-list {
+  position: relative;
+  -webkit-transition: top 0.7s ease-in, opacity 0.7s ease-out;
+  top: 0;
+}
+.question-list.animate-top {
+  top: -1300px;
+  opacity: 0;
 }
 .banner {
   padding: 1em 0 1em 0;
@@ -9063,4 +9130,117 @@ body {
 .spacer {
   height: 64px;
   background: #424242;
+}
+.tipsy {
+  font-size: 10px;
+  position: absolute;
+  padding: 5px;
+  z-index: 100000;
+}
+.tipsy-inner {
+  background-color: #000;
+  color: #FFF;
+  max-width: 200px;
+  padding: 5px 8px 4px 8px;
+  text-align: center;
+}
+/* Rounded corners */
+.tipsy-inner {
+  border-radius: 3px;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+}
+/* Uncomment for shadow */
+/*.tipsy-inner { box-shadow: 0 0 5px #000000; -webkit-box-shadow: 0 0 5px #000000; -moz-box-shadow: 0 0 5px #000000; }*/
+.tipsy-arrow {
+  position: absolute;
+  width: 0;
+  height: 0;
+  line-height: 0;
+  border: 5px dashed #000;
+}
+/* Rules to colour arrows */
+.tipsy-arrow-n {
+  border-bottom-color: #000;
+}
+.tipsy-arrow-s {
+  border-top-color: #000;
+}
+.tipsy-arrow-e {
+  border-left-color: #000;
+}
+.tipsy-arrow-w {
+  border-right-color: #000;
+}
+.tipsy-n .tipsy-arrow {
+  top: 0px;
+  left: 50%;
+  margin-left: -5px;
+  border-bottom-style: solid;
+  border-top: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-nw .tipsy-arrow {
+  top: 0;
+  left: 10px;
+  border-bottom-style: solid;
+  border-top: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-ne .tipsy-arrow {
+  top: 0;
+  right: 10px;
+  border-bottom-style: solid;
+  border-top: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-s .tipsy-arrow {
+  bottom: 0;
+  left: 50%;
+  margin-left: -5px;
+  border-top-style: solid;
+  border-bottom: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-sw .tipsy-arrow {
+  bottom: 0;
+  left: 10px;
+  border-top-style: solid;
+  border-bottom: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-se .tipsy-arrow {
+  bottom: 0;
+  right: 10px;
+  border-top-style: solid;
+  border-bottom: none;
+  border-left-color: transparent;
+  border-right-color: transparent;
+}
+.tipsy-e .tipsy-arrow {
+  right: 0;
+  top: 50%;
+  margin-top: -5px;
+  border-left-style: solid;
+  border-right: none;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+.tipsy-w .tipsy-arrow {
+  left: 0;
+  top: 50%;
+  margin-top: -5px;
+  border-right-style: solid;
+  border-left: none;
+  border-top-color: transparent;
+  border-bottom-color: transparent;
+}
+svg .node {
+  cursor: pointer;
+  opacity: 0.68;
 }

@@ -1,94 +1,61 @@
-<div class="question-detail">
+<div class="card-content admin-content">
+	<i class="delete-question material-icons">close</i>
 
 	{{#isCheckbox this.model.type}}
-		<ul>
-			{{#each model.preparedAnswers}}
-				<li class="answer-block">
-					<span class="answer-bar p-{{percent}}"></span>
-					<span class="answer-value p-{{percent}}">{{key}}: {{percent}}%</span>
-				</li>
-			{{/each}}
-		</ul>
+		<div class="row">
+			<div class="col s3 legend-container">
+				<h6><b>Answers ({{model.answers.length}})</b></h6>
+				<ul class="collection answer-collection">
+					{{#each this.model.preparedAnswers}}
+						<li class="collection-item">{{label}}: {{value}}</li>
+					{{/each}}
+				</ul>
+			</div>	
+			<div class="col s9 chart-container">
+				<canvas class="chart-canvas dropable" width="300" height="100"></canvas>
+			</div>
+		</div>
+		
 	{{/isCheckbox}}
 
-	{{#isShortAnswer this.model.type}}
-		<div class="two-thirds fl">
-			<h3>Answers ({{model.answers.length}})</h3>
-			<ul class="participant-list">
+	{{#isNotCheckbox this.model.type}}
+		<div class="row">
+			<div class="col s12 m6 answers-row">
+				<h6>Answers:</h6>
 				{{#each model.answers}}
-					<li draggable="true" class="answer-block" data-id="{{id}}">
-						<span class="answer-bar p-100"></span>
-						<span class="answer-value p-100">{{value}}</span>
-					</li>
+					<span data-id="{{this.id}}" draggable="true" class="answer-value badge red lighten-3 white-text p-100">{{value}}</span>
 				{{/each}}
-			</ul>	
-		</div>
-		<div class="one-third fl">
-			<h3>Groups</h3>
-			<div class="group-controls">
-				<div class="group-count">
-					Number of groups: <input type="text" name="group-count" value="{{model.groups.length}}">
-				</div>
-				<button class="remove-all-member btn small red lighten-3"><span class="fa fa-remove"></span> Remove all Answers</button>
 			</div>
-			<ul class="groups">
-				{{#each model.groups.models}}
-					<li data-id="{{id}}" class="drag-target group">
-						<span class="group-desc">Group: </span>
-						<span class="group-name">{{name}}</span>
-						<ul class="members">
-							{{#each members}}
-							<li data-id="{{id}}" class="member">{{value}}<span class="fa fa-remove remove-member "></span></li>
-							{{/each}}
-						</ul>
-					</li>
-				{{/each}}
-			</ul>
-		</div>
-		<div class="cf"></div>
-	{{/isShortAnswer}}
-
-	{{#is this.model.type 'go'}}
-	
-		<div class="two-thirds fl">
-			<h3>Participants ({{model.answers.length}})</h3>
-			<ul class="participant-list">
-				{{#each model.answers}}
-					<li draggable="true" class="answer-block" data-id="{{id}}">
-						<span class="answer-bar p-100"></span>
-						<span class="answer-value p-100">{{value}}</span>
-					</li>
-				{{/each}}
-			</ul>	
-		</div>
-		<div class="one-third fl">
-			<h3>Groups</h3>
-			<div class="group-controls">
-				<div class="group-count">
-					Number of groups: <input type="text" name="group-count" value="{{model.groups.length}}">
+			<div class="col s12 m6 groups-row">
+				<div class="group-controls">
+					<div class="row">
+						<div class="col s7">
+							<div class="group-count">
+								Groups: <input type="text" name="group-count" value="{{model.groups.length}}">
+							</div>
+						</div>
+						<div class="col s5">
+							<button class="remove-all-member btn small red lighten-3">Remove all Answers</button>
+						</div>
+					</div>
 				</div>
-				<button class="btn small randomize-groups"><span class="fa fa-random"></span> Randomize Members</button>
-				<button class="remove-all-member btn small"><span class="fa fa-remove"></span> Remove all Members</button>
-				<button class="btn small green publish-groups"><span class="fa fa-bullhorn"></span> Publish Groups</button>
+				<ul class="groups">
+					{{#each model.groups.models}}
+						<li data-id="{{id}}" class="dropable group">
+							<span class="group-desc">Group: </span>
+							<span class="group-name">{{name}}</span>
+							<ul class="members">
+								{{#each members}}
+								<li data-id="{{id}}" class="member">{{value}}<span class="fa fa-remove remove-member "></span></li>
+								{{/each}}
+							</ul>
+						</li>
+					{{/each}}
+				</ul>
 			</div>
-			<ul class="groups">
-				{{#each model.groups.models}}
-					<li data-id="{{id}}" class="drag-target group">
-						<span class="group-desc">Group: </span>
-						<span class="group-name">{{name}}</span>
-						<ul class="members">
-							{{#each members}}
-							<li data-id="{{id}}" class="member">{{value}}<span class="fa fa-remove remove-member "></span></li>
-							{{/each}}
-						</ul>
-					</li>
-				{{/each}}
-			</ul>
+            <div class="col s12 m12">
+                <div class="group-canvas-view dropable"></div>
+            </div>
 		</div>
-		<div class="cf"></div>
-
-	{{/is}}
-
-
-		
+	{{/isNotCheckbox}}
 </div>

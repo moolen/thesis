@@ -126,7 +126,7 @@ var Application = App.extend({
 			model: this.models.usercount
 		});
 
-		this.registerBindings();
+		$(_.bind(this.registerBindings, this));
 		this.socket.on('server:ready', this.onServerReady.bind(this));
 
 		this.config.adminToken = cookie.read('admin-token');
@@ -174,11 +174,15 @@ var Application = App.extend({
 		// - via click
 		// - via eventEmitter / Router
 		$('.create-question').click(this.createQuestionView.bind(this));
+		$(".dropdown-button").dropdown({
+			constrain_width: false
+		});
 		this.on(this.events.CREATE_QUESTION, this.createQuestionView.bind(this));
+		this.on(this.events.NEW_QUESTION, this.views.questionList.show, this.views.questionList);
 		
 		// show question view
 		// - via eventEmitter / Router
-		this.on(this.events.SHOW_QUESTION, this.showQuestionView.bind(this));
+		//this.on(this.events.SHOW_QUESTION, this.showQuestionView.bind(this));
 	},
 
 	/**
@@ -189,7 +193,7 @@ var Application = App.extend({
 	 */
 	createQuestionView: function(){
 		if( this.config.isAdmin ){
-			this.views.questionList.removeHighlight();
+			this.views.questionList.hide();
 			return this.viewSwitcher.set( new CreateQuestionView({
 				el: $('#create-question-view')[0],
 				collection: this.collections.questionCollection
@@ -207,20 +211,20 @@ var Application = App.extend({
 	 * @param  {UUID/Hash} id [the id of the Question]
 	 * @return {void}
 	 */
-	showQuestionView: function(id){
-		var model = this.collections.questionCollection.get(id);
-		if( model ){
-			// set highlighting
-			model.highlight = 'active';
-			// set view
-			return this.viewSwitcher.set( new ShowQuestionView({
-				model: model,
-				el: $('#show-question')[0]
-			}));
-		}
-		// fallback: root
-		this.router.redirectTo('/');
-	}
+	// showQuestionView: function(id){
+	// 	var model = this.collections.questionCollection.get(id);
+	// 	if( model ){
+	// 		// set highlighting
+	// 		model.highlight = 'active';
+	// 		// set view
+	// 		return this.viewSwitcher.set( new ShowQuestionView({
+	// 			model: model,
+	// 			el: $('#show-question')[0]
+	// 		}));
+	// 	}
+	// 	// fallback: root
+	// 	this.router.redirectTo('/');
+	// }
 
 });
 

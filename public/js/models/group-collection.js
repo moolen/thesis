@@ -29,6 +29,8 @@ module.exports = BaseCollection.extend({
 				return index >= val;
 			});
 		}
+
+		this.trigger('change');
 	},
 
 	removeAllMembers: function(){
@@ -40,7 +42,7 @@ module.exports = BaseCollection.extend({
 	randomize: function(members){
 		
 		var groupCount = this.models.length,
-			shuffledMembers, groupedMembers
+			shuffledMembers, groupedMembers;
 
 		// shuffle members
 		shuffledMembers = _.shuffle(members);

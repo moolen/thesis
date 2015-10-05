@@ -12,15 +12,27 @@
     </script>
 </head>
 <body>
-    <nav>
-        <div class="nav-wrapper red lighten-2">
-            <div class="input-field">
-                <input id="search" type="search" required>
-                <label for="search"><i class="material-icons">search</i></label>
+    <div class="navbar-fixed">
+        <nav>
+            <div class="nav-wrapper red lighten-2">
+                <div class="input-field">
+                    <input id="search" type="search" required>
+                    <label for="search"><i class="material-icons">search</i></label>
+                </div>
+                <ul class="right right-menu">
+                    <li>
+                        <a href="#" data-activates="more-dropdown" class="dropdown-button"><i class="material-icons">more_vert</i></a>
+                    </li>
+                </ul>
             </div>
-        </div>
-    </nav>
-    <span class="user-count-view"></span>
+            <ul id="more-dropdown" class="dropdown-content">
+                <li>
+                    <span class="user-count-view"></span>
+                </li>
+                <li class="divider"></li>
+            </ul>
+        </nav>
+    </div>
     <div id="content" class="session container">
         {{{body}}}
         <div id="app">
@@ -30,23 +42,6 @@
                     <a class="btn-floating btn-large red">
                         <i class="large material-icons">mode_edit</i>
                     </a>
-                    <ul>
-                        <li>
-                            <a class="btn-floating red" title="Yes/No" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;">
-                                <div class="multiple-icon-wrap">
-                                    <i class="material-icons first">done</i>
-                                    <i class="material-icons">close</i>
-                                </div>
-                            </a>
-                        </li>
-                        <li><a class="btn-floating green" title="group" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;"><i class="material-icons">supervisor_account</i></a></li>
-                        <li><a class="btn-floating yellow darken-4" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;"><i class="material-icons">reorder</i></a></li>
-                        <li>
-                            <a class="btn-floating blue" title="multiple choice" style="transform: scaleY(0.4) scaleX(0.4) translateY(40px); opacity: 0;">
-                                <i id="menu-multiple-choice" class="icon-mirrored material-icons">toc</i>
-                            </a>
-                        </li>
-                    </ul>
                 </div>
                 {{/if}}
                 <div id="question-list-view"></div>
@@ -59,6 +54,7 @@
         </div>
     </div>
     <script src="/js/build/bundle.js"></script>
+    <script src="/js/vendor/chart.js"></script>
     <script src="/js/vendor/materialize.js"></script>
 </body>
 </html>

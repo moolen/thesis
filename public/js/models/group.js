@@ -3,7 +3,7 @@ var State = require('ampersand-state'),
 	uuid = require('lib/uuid.js'),
 	_ = require('lodash');
 
-var QuestionModel = State.extend({
+var GroupModel = State.extend({
 	
 	props: {
 		id: 'string',
@@ -41,4 +41,4 @@ var QuestionModel = State.extend({
 	}
 });
 
-module.exports = QuestionModel;
+module.exports = GroupModel;

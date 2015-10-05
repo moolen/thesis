@@ -24,13 +24,11 @@
                 <div class="row">
                     <div class="input-field col s12">
                         <h6>Enter your multiple-choice options below:</h6>
-                        <div class="collection">
-                            {{#each model.acceptedOptions}}
-                                    <div class="collection-item">
-                                        <input type="text" class="mc-answer" value="{{value}}" placeholder="type your option">    
-                                    </div>
-                            {{/each}}
-                        </div>
+                        {{#each model.acceptedOptions}}
+                                <div>
+                                    <input type="text" class="mc-answer" value="{{value}}" placeholder="type your option">
+                                </div>
+                        {{/each}}
                     </div>
                 </div>
                 <div class="row">
@@ -39,7 +37,8 @@
             {{/is}}
 
             <div class="row">
-                <button data-trigger="create" class="btn red lighten-3 save-question">create</button>
+                <button data-trigger="abort" class="btn red lighten-2">cancel</button>
+                <button data-trigger="create" class="btn white black-text darken-3 save-question">create</button>
             </div>
         </div>
     </div>
