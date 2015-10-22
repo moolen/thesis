@@ -1,6 +1,4 @@
-FROM node:4.2.1-slim
-
-RUN npm install -g gulp
+FROM node:4.2.1
 
 RUN mkdir /src
 
@@ -9,5 +7,6 @@ ADD src/package.json /src/
 RUN npm install
 ADD src /src
 
+
 CMD []
-ENTRYPOINT ["/nodejs/bin/npm", "start"]
+ENTRYPOINT ["npm", "start"]
