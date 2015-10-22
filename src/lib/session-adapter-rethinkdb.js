@@ -19,31 +19,27 @@ var SessionRethinkAdapter = function( options ){
         if(err) throw err;
         self.conn = conn;
 
-        // create table
-        try{
-            r.dbList().contains('whitedesk')
-                .do(function(databaseExists){
-                    return r.branch(databaseExists, { created: 0 }, r.dbCreate('whitedesk'));
+    // initialize database
+    // and `sessions` table
+    // and socket namespaces
+    r.dbList().contains('whitedesk')
+        .do(function(databaseExists){
+            return r.branch(databaseExists, { created: 0 }, r.dbCreate('whitedesk').do(function(){
+                return r.db(self.db).tableList().contains('sessions').do(function(tableExists){
+                    return r.branch(tableExists, { created: 0 }, r.tableCreate('sessions'));
                 });
+            }));
+        }).run(conn, function(){
+            var socketNamespace = require('./socket-namespace.js'),
+                socket = require('../app.js').getSocket();
 
-            r.db(self.db).tableCreate('sessions').run(conn, function(){
-
-            });
-
-        }catch(e){
-            console.log(e);
-        }
-
-        var socketNamespace = require('./socket-namespace.js'),
-            socket = require('../app.js').getSocket();
-
-        r.table('sessions').run(self.conn, function(err, c){
-            if(err) throw err;
-            c.each(function(err, session){
-                   socketNamespace.initializeNamespace(socket, session.id);
+            r.table('sessions').run(self.conn, function(err, c){
+                if(err) throw err;
+                c.each(function(err, session){
+                       socketNamespace.initializeNamespace(socket, session.id);
+                });
             });
         });
-
     });
 
 };

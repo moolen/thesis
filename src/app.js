@@ -5,7 +5,7 @@ var express = require('express'),
     auth = require('./lib/authentication.js'),
     sessionStorage = require('./lib/session-adapter.js')
       .setOptions('rethinkdb', {
-        host: 'rethinkdb',
+        host: 'localhost',
         port: process.env.RETHINKDB_PORT_28015_TCP_PORT||28015
       })
       .initialize(),
