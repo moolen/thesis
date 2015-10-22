@@ -1,0 +1,135 @@
+@min-width-switch: 20;
+@answer-height: 1em;
+@answer-padding: .33em;
+
+.answer-block{
+	position: relative;
+	height: @answer-height;
+	padding: @answer-padding;
+	margin: .667em 0;
+
+	.generate-upper-answer-percent();
+	.generate-lower-answer-percent();
+
+	.answer-bar{
+		position: absolute;
+		top:0;
+		left:0;
+		bottom:0;
+		min-width: @min-width-switch * 1%;
+		padding: @answer-padding 0;
+
+		box-shadow: 4px 2px 7px desaturate(lighten(@primary-color, 20%), 80%);
+		background: @primary-color;
+		color: #fff;
+		line-height: @answer-height;
+	}
+	.answer-value{
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		padding: @answer-padding 0;
+		line-height: @answer-height;
+
+		color: #fff;
+
+		text-align: center;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		overflow: hidden;
+		.fa-remove{
+			position: absolute;
+			right: .33em;
+			cursor: pointer;
+		}
+	}
+
+}
+
+
+
+.participant-list{
+	padding: 0 2em 0 0;
+}
+
+.group-controls{
+	padding: .66em 1.66em;
+	background: #fff;
+	.button{
+		display: block;
+		margin: 1em 0;
+		width: 100%;
+	}
+	input{
+		width: 3.33em;
+		padding: .33em .66em;
+		margin: 0 .66em;
+		text-align: center;
+	}
+}
+
+.groups{
+
+	li{
+		padding: 0.33em;
+		margin: .667em 0;
+		background-color: #fff;
+		color: #333;
+		text-align: center;
+
+		transition: background .1s ease-out;
+
+		.group-name{
+			color: @primary-color;
+			cursor: pointer;
+		}
+
+		.members{
+			padding: 0 0 0 1em;
+			li{
+				text-align: left;
+				.remove-member{
+					margin: 0 0 0 .33em;
+					cursor: pointer;
+				}
+			}
+		}
+
+		&.drag-enter{
+			background: @primary-color;
+			color: #fff;
+
+			.members li{
+				background: @primary-color;
+				color: #fff;
+			}
+
+			&.not-allowed{
+				background: red;
+				.members li{
+					background: red;
+				}
+			}
+			
+		}
+
+	}
+}
+
+.generate-upper-answer-percent(@i: 100) when (@i > @min-width-switch){
+	.p-@{i} {
+		width: (@i * 1%);
+	}
+	.generate-upper-answer-percent(@i - 1);
+}
+
+.generate-lower-answer-percent(@i: @min-width-switch) when (@i > 0){
+	.p-@{i} {
+		&.answer-value{
+			margin-left: @min-width-switch + 1 * 1%;
+			color: @primary-color;
+		}
+	}
+	.generate-lower-answer-percent(@i - 1);
+}

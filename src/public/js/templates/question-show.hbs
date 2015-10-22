@@ -1,0 +1,92 @@
+<div class="card darken-1">
+    <div class="card-content question-content black-text">
+        <h3 class="card-title black-text">
+            {{#isCheckbox this.model.type}}
+                <i class="material-icons medium card-type red-text text-lighten-2">poll</i>
+            {{/isCheckbox}}
+
+            {{#isNotCheckbox this.model.type}}
+                <i class="material-icons medium card-type red-text text-lighten-2">people</i>
+            {{/isNotCheckbox}}
+            {{model.question}}
+        </h3>
+
+
+        {{#is this.model.hasAnswered false}}
+
+            {{#unless config.isAdmin}}
+
+                {{#is this.model.type 'mc'}}
+                    <div class="row">
+                        <div class="input-field nm-top col s12">
+                            {{#each model.acceptedOptions}}
+                                <p>
+                                    <input type="radio"  name="question" id="mc-answer-{{model.id}}-{{value}}" value="{{value}}" class="mc-answer">
+                                    <label for="mc-answer-{{model.id}}-{{value}}">{{value}}</label>    
+                                </p>
+                            {{/each}}
+                        </div>
+                    </div>
+                {{/is}}
+
+                {{#is this.model.type 'bool'}}
+                    <div class="row">
+                        <div class="input-field nm-top col s12">
+                            <p>
+                                <input type="radio" name="question" id="question-{{model.id}}-bool-true" value="true">
+                                <label for="question-{{model.id}}-bool-true">Richtig</label>    
+                            </p>
+                            <p>
+                                <input type="radio" name="question" id="question-{{model.id}}-bool-false" value="false">
+                                <label for="question-{{model.id}}-bool-false">Falsch</label>    
+                            </p>
+                        </div>
+                    </div>
+                {{/is}}
+
+                {{#is this.model.type 'sa'}}
+                    {{#is this.config.isAdmin false}}
+                        <div class="row">
+                            <div class="input-field nm-top col s12">
+                                <p>
+                                    <label for="question-{{model.id}}-sa">Deine Antwort:</label>
+                                    <input id="question-{{model.id}}-sa" name="question" type="text" >    
+                                </p>
+                            </div>
+                        </div>
+                    {{/is}}
+                {{/is}}
+
+                {{#is this.model.type 'go'}}
+                    {{#is this.config.isAdmin false}}
+                        <div class="row">
+                            <div class="input-field nm-top col s12">
+                                <p>
+                                    <label for="question-sa">Dein Name:</label><input id="question-sa" name="question" type="text" >    
+                                </p>
+                            </div>
+                        </div>
+                    {{/is}}
+                {{/is}}
+                {{#unless this.config.isAdmin }}
+                    <div class="row">
+                        <div class="col s12">
+                            <button class="btn red lighten-3 waves-effect waves- light submit-answer">Abschicken</button>
+                        </div>
+                    </div>
+                {{/unless}}
+            {{/unless}}
+        {{else}}
+            {{#if this.model.assignedGroup}}
+                Deine Gruppe: &quot;{{this.model.assignedGroup}}&quot;
+            {{else}}
+                {{#is this.model.type 'go'}}
+                    <h6>Vielen Dank. In kürze wirst du einer Gruppe zugeteilt.</h6>
+                {{else}}
+                    <h6>Vielen Dank, du hast die Frage beantwortet!</h6>
+                {{/is}}
+                    
+            {{/if}}
+        {{/is}}
+    </div>
+</div>

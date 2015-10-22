@@ -1,0 +1,69 @@
+<div class="card-content admin-content">
+    <i class="delete-question material-icons">close</i>
+
+    {{#isCheckbox this.model.type}}
+        <div class="row">
+            <div class="col s3 legend-container">
+                <h6><b>Answers ({{model.answers.length}})</b></h6>
+                <ul class="collection answer-collection">
+                    {{#each this.model.preparedAnswers}}
+                        <li class="collection-item">{{label}}: {{value}}</li>
+                    {{/each}}
+                </ul>
+            </div>  
+            <div class="col s9 chart-container">
+                <canvas class="chart-canvas" width="300" height="100"></canvas>
+            </div>
+        </div>
+        
+    {{/isCheckbox}}
+
+    {{#isNotCheckbox this.model.type}}
+        <div class="row">
+            <div class="col s12 m6 answers-row">
+                <h6>Answers:</h6>
+                {{#each model.answers}}
+                    <span data-id="{{this.id}}" draggable="true" class="answer-value badge red lighten-{{isAnswerUsed ../model this}} white-text p-100">{{value}}</span>
+                {{/each}}
+            </div>
+            <div class="col s12 m6 groups-row">
+                <div class="group-controls">
+                    <div class="row">
+                        <div class="col m12">
+                            <div class="group-count">
+                                Groups: <input type="text" name="group-count" value="{{model.groups.length}}">
+                            </div>
+                        </div>
+                        <div class="col m12 group-actions">
+                            <button class="remove-all-member btn small red lighten-3">Antworten zurücksetzen</button>
+                            {{#is this.model.type 'go'}}
+                                <button class="publish-groups btn small green lighten-2">Gruppen veröffentlichen</button>
+                            {{/is}}
+                            
+                        </div>
+                    </div>
+                </div>
+                <ul class="groups">
+                    {{#each model.groups.models}}
+                        <li data-id="{{id}}" class="dropable group">
+                            <span class="group-desc">Group: </span>
+                            <span class="group-name">{{name}}</span>
+                            <ul class="members">
+                                {{#each members}}
+                                <li data-id="{{id}}" class="member">{{value}}<i class="remove-member material-icons">close</i></li>
+                                {{/each}}
+                            </ul>
+                        </li>
+                    {{/each}}
+                </ul>
+            </div>
+            <div class="col s12 m12 button-row">
+                <button class="btn grey lighten-1 show-canvas">toggle canvas</button>
+                <button class="btn grey lighten-1 hide-canvas">toggle canvas</button>
+            </div>
+            <div class="col s12 m12">
+                <div id="canvas-{{this.model.id}}" class="group-canvas-view"></div>
+            </div>
+        </div>
+    {{/isNotCheckbox}}
+</div>

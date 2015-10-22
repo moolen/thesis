@@ -1,0 +1,45 @@
+<div id="create-question-view">
+    <div class="row">
+        <div class="col s12">
+            <div class="row">
+                <div class="input-field col s12">
+                    <input type="text" id="question" data-hook="question" value="{{model.question}}" placeholder="Was ist deine Lieblingsfarbe?">
+                    <label class="{{this.inputHighlight}}" for="question">Frage:</label>
+                </div>
+            </div>
+            <div class="row">
+                <div class="input-field col s12">
+                    <select class="" name="question-type" data-hook="type" id="question-type">
+                        <option class="default" selected value="">Bitte auswählen</option>
+                        <option value="mc" data-icon="info_outline" data-tooltip="Hier kannst du die möglichen Antworten selbst definieren. Nur eine Antwort kann ausgewählt werden">Multiple Choice</option>
+                        <option value="bool" data-icon="info_outline" data-tooltip="Die Frage kann nur mit richtig oder falsch beantwortet werden">Richtig / Falsch</option>
+                        <option value="sa" data-icon="info_outline" data-tooltip="Der Teilnehmer kann selbst eine Antwort angeben">Kurze Antwort</option>
+                        <option value="go" data-icon="info_outline" data-tooltip="Der Teilnehmer muss seinen Namen eingeben und wird von dir in eine Gruppe eingeteilt">Gruppenorganisation</option>
+                    </select>
+                    <label for="question-type">Fragen-Typ:</label>
+                </div>
+            </div>
+
+            {{#is model.type  'mc'}}
+                <div class="row">
+                    <div class="input-field col s12">
+                        <h6>Bitte gib hier deine möglichen Antworten ein:</h6>
+                        {{#each model.acceptedOptions}}
+                                <div>
+                                    <input type="text" class="mc-answer" value="{{value}}" placeholder="Antwortoption">
+                                </div>
+                        {{/each}}
+                    </div>
+                </div>
+                <div class="row">
+                    <button class="btn add-option"><i class="material-icons">add</i>Antwort</button>
+                </div>
+            {{/is}}
+
+            <div class="row">
+                <button data-trigger="abort" class="btn red lighten-2"><i class="material-icons">close</i>Abbrechen</button>
+                <button data-trigger="create" class="btn white black-text darken-3 save-question"><i class="material-icons">done</i>Erstellen</button>
+            </div>
+        </div>
+    </div>
+</div>
