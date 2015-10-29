@@ -5,7 +5,7 @@ var express = require('express'),
     auth = require('./lib/authentication.js'),
     sessionStorage = require('./lib/session-adapter.js')
       .setOptions('rethinkdb', {
-        host: 'localhost',
+        host: 'rethinkdb',
         port: process.env.RETHINKDB_PORT_28015_TCP_PORT||28015
       })
       .initialize(),
@@ -18,6 +18,20 @@ var express = require('express'),
     socketio = require('socket.io'),
     io, server;
 
+// Enables CORS
+var enableCORS = function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', '*');
+    res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
+    res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With, *');
+
+        // intercept OPTIONS method
+    if ('OPTIONS' == req.method) {
+        res.send(200);
+    } else {
+        next();
+    };
+};
+
 var hbs = handlebars.create({
     defaultLayout: 'main',
     extname: '.hbs',
@@ -26,7 +40,7 @@ var hbs = handlebars.create({
 
 app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
-
+app.use(enableCORS);
 app.use(express.static('public'));
 app.use(i18n.middleware);
 app.use(cookieParser(config.cookieSecret));
@@ -42,6 +56,7 @@ server = app.listen(config.port, config.domain, function () {
 });
 
 io = socketio(server);
+//io.origins('*');
 
 module.exports.app = app;
 
