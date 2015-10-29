@@ -39,6 +39,7 @@ var createSessionRoute = function(req, res){
 		adminToken = token(32);
 
 	// create session
+    // @todo check sessionToken collision
 	req.session.createSession(sessionToken, adminToken);
 
 	socketNamespace.initializeNamespace(socket, sessionToken);
