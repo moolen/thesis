@@ -70,13 +70,23 @@
             var joinButton = document.getElementById('join-button'),
                 sessionInput = document.getElementById('session-id');
 
-            joinButton.addEventListener('click', function(e){
-              var id = sessionInput.value;
-              if( id ){
-                window.location.href = window.location.href + id;
-              }
-              e.preventDefault();
-            }, false);
+
+            var checkEnter = function(e){
+                if(e.keyCode === 13){
+                    redirectUser(e);
+                }
+            };
+
+            var redirectUser = function(e){
+                var id = sessionInput.value;
+                if( id ){
+                    window.location.href = window.location.href + id;
+                }
+                e.preventDefault();
+            };
+
+            joinButton.addEventListener('click', redirectUser, false);
+            sessionInput.addEventListener('keydown', checkEnter, false);
         }());
     </script>
     </body>
