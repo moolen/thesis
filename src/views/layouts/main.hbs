@@ -3,40 +3,81 @@
 <head>
     <meta charset="utf-8">
     <title>{{i18n.NAME}} | {{i18n.TITLE}}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <link rel="stylesheet" href="/styles/main.css">
 </head>
 <body>
-    <header class="banner">
-        <div class="container">
-            <h1 class="white-text center-on-small-only">Whitedesk</h1>
-            <div class="row center">
-                <h4 class="col s12 light center white-text">Nur ein Klick auf den Button, keine Registrierung notwendig.</h4>
-            </div>
-            <div class="row center">
-                <a href="/create" class="btn-large waves-effect waves-light red lighten-3">Start Session</a>
-            </div>
-        </div>
- 
-    </header>
-    <div class="spacer"></div>
-    <div id="content">
-        {{{body}}}
-    </div>
-    <footer class="page-footer">
-        <div class="container">
-            <div class="row">
-                <div class="col l6 s12">
-                    <h5 class="white-text">Footer Content</h5>
-                    <p class="grey-text text-lighten-4">You can use rows and columns here to organize your footer content</p>
+    <div class="page-wrapper">
+        <header class="banner">
+            <div class="container">
+                <h1 class="white-text center-on-small-only">Whitedesk</h1>
+                <div class="row white-text">
+                    <div class="col">
+                        <p>WhiteDesk ist ein web-basiertes audience response System für Vorlesungen und Seminare.</p>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="footer-copyright">
-            <div class="container">
-                © 2014 Copyright Text
-                <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+        </header>
+        <div class="spacer blue-grey darken-4"></div>
+        <div id="content" class="container">
+            <div class="row center">
+                <div class="col m5 push-top-60">
+                    <p>Als Dozent können Sie hier eine neue Veranstaltung anlegen. Studierenden können sich bei der Veranstaltung anmelden und dem Dozenten Feedback geben.</p>
+                    <div class="col s12">
+                        <a href="/create" class="btn-large waves-effect waves-light red lighten-3">Session erstellen</a>
+                    </div>
+                </div>
+                <div class="col m5 offset-m1 s12 push-top-60">
+                    <p>Um an der Veranstaltung teilzunehmen, geben Sie bitte hier die Session ID ein.</p>
+                    <div class="col m12 s12">
+                        <div class="col m8 s12">
+                            <input type="text" class="" id="session-id" placeholder="Session ID">
+                        </div>
+                        <div class="col m4 s12">
+                            <a href="" id="join-button" class="btn-large waves-light red lighten-3">beitreten</a>
+                        </div>
+                        
+                        
+                    </div>
+                </div>
+                    
             </div>
+            <div class="row center">
+                
+            </div>
+            <div class="row center push-top-60">
+                <div class="col s12">
+                    
+                </div>
+            </div>
+            <div class="row center join-session-row">
+                
+            </div>
+            {{{body}}}
         </div>
-    </footer>
+        <footer class="page-footer grey lighten-3 ">
+            <div class="footer-copyright">
+                <div class="container">
+                    <span class="grey-text darken-1">&copy; 2015</span>
+                    <a class="right grey-text darken-1" href="https://docs.google.com/forms/d/1x8rAiHqX8oiHwXhlT1Bn-VCSSTGN46ttNobfp8cwtWg/" target="_blank">Feedback</a>
+                </div>
+            </div>
+        </footer>
+    </div>
+    <script>
+        (function(){
+            'use strict';
+            var joinButton = document.getElementById('join-button'),
+                sessionInput = document.getElementById('session-id');
+
+            joinButton.addEventListener('click', function(e){
+              var id = sessionInput.value;
+              if( id ){
+                window.location.href = window.location.href + id;
+              }
+              e.preventDefault();
+            }, false);
+        }());
+    </script>
     </body>
 </html>

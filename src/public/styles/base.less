@@ -13,8 +13,26 @@ ul{
     margin: 1em;
 }
 
-#content{
-  min-height: 100%;
+.page-wrapper{
+    min-height: 100%;
+}
+
+.nav-wrapper .session{
+    font-size: 1.667em;
+    font-weight: 100;
+}
+
+.dropdown-content li{
+    &:hover, &.active{
+        background-color: #e5e6e6;
+    }
+}
+
+.page-footer{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 ul.select-dropdown{
@@ -34,6 +52,10 @@ ul.select-dropdown{
 
 .user-count-view{
   display: none;
+}
+
+footer.page-footer {
+    padding-top:0;
 }
 
 .right-menu{
