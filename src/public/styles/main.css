@@ -9045,6 +9045,7 @@ ul {
 }
 .page-wrapper {
   min-height: 100%;
+  position: relative;
 }
 .nav-wrapper .session {
   font-size: 1.667em;
@@ -9056,7 +9057,7 @@ ul {
 }
 .page-footer {
   position: absolute;
-  bottom: 0;
+  bottom: -20px;
   left: 0;
   right: 0;
 }
@@ -9069,6 +9070,10 @@ ul.select-dropdown i {
 .nav-wrapper {
   z-index: 1000;
   position: relative;
+}
+.nav-wrapper .right-menu i {
+  vertical-align: middle;
+  display: inline-block;
 }
 .user-count-view {
   display: none;
