@@ -1,11 +1,5 @@
 web:
   build: .
-  environment:
-  volumes:
-    - ./app:/srv/app
-    - ./src:/srv/src
-    - ./vendor:/srv/vendor
-    - ./web:/srv/web
   ports:
    - "3000:3000"
   links:
