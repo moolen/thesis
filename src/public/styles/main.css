@@ -9043,8 +9043,22 @@ h4 {
 ul {
   margin: 1em;
 }
-#content {
+.page-wrapper {
   min-height: 100%;
+}
+.nav-wrapper .session {
+  font-size: 1.667em;
+  font-weight: 100;
+}
+.dropdown-content li:hover,
+.dropdown-content li.active {
+  background-color: #e5e6e6;
+}
+.page-footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
 }
 ul.select-dropdown i {
   float: right;
@@ -9058,6 +9072,9 @@ ul.select-dropdown i {
 }
 .user-count-view {
   display: none;
+}
+footer.page-footer {
+  padding-top: 0;
 }
 .right-menu {
   position: absolute;
@@ -9169,10 +9186,18 @@ ul.groups .members .remove-member {
 .banner h1 {
   font-family: Raleway;
   margin-top: 0;
+  font-size: 3em;
 }
 .spacer {
-  height: 64px;
+  height: 24px;
   background: #424242;
+}
+.row.join-session-row .col {
+  margin: 0 auto;
+  float: none;
+}
+.push-top-60 {
+  margin-top: 60px;
 }
 .tipsy {
   font-size: 10px;
