@@ -7,7 +7,7 @@ var sessionRoute = function(req, res){
 	var	url = req.protocol + '://' + config.domain;
 
 	// fetch session from storage
-	req.session.get(req.params.session).then(function(session){
+	req.session.get(req.params.session.toUpperCase()).then(function(session){
 		// case: session exists
 		if(session){
 			
