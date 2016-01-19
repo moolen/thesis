@@ -20,14 +20,7 @@ var initializeNamespace = function( socket, token ){
 
     // create new websocket namespace
     var namespace = socket.of('/' + token).on('connection', function(sock){
-        var cookies = cookie.parse(sock.request.headers.cookie || ''),
-            isAdmin = false;
-
-        if( cookies['admin-token'] ){
-            authenticateAdmin(token, cookies['admin-token']).then(function(provenAdmin){
-                isAdmin = provenAdmin;
-            });
-        }
+        var isAdmin = false;
 
         // when any socket disconnects:
         // emit msg all remaining (sock is null!)
@@ -38,17 +31,21 @@ var initializeNamespace = function( socket, token ){
         // ready event
         // - the client is now ready to run
         sock.on('client:ready', function(cfg){
-            bluebird.all(
-                session.getData(token, 'questions'),
-                session.getData(token, 'activities')
-            ).then(function(questions, activities){
+            authenticateAdmin(token, cfg.admin).then(function(isActuallyAdmin){
+                isAdmin = isActuallyAdmin;
+                bluebird.all(
+                    session.getData(token, 'questions'),
+                    session.getData(token, 'activities')
+                ).then(function(questions, activities){
 
-                sock.emit('server:ready', {
-                    usercount: { count: connectedCount(namespace) },
-                    questions: questions,
-                    activities: activities
+                    sock.emit('server:ready', {
+                        usercount: { count: connectedCount(namespace) },
+                        questions: questions,
+                        activities: activities
+                    });
                 });
-            });
+            })
+            
         });
 
         sock.on('questions:add', function(model){

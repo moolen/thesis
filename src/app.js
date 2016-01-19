@@ -4,9 +4,9 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     auth = require('./lib/authentication.js'),
     sessionStorage = require('./lib/session-adapter.js')
-      .setOptions('rethinkdb', {
-        host: 'rethinkdb',
-        port: process.env.RETHINKDB_PORT_28015_TCP_PORT||28015
+      .setOptions(config.db.type, {
+        host: config.db.host,
+        port: config.db.port
       })
       .initialize(),
     handlebars = require('express-handlebars'),
