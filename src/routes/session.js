@@ -36,7 +36,10 @@ var createSessionRoute = function(req, res){
 	
 	// create tokens
 	var sessionToken = token(),
-		adminToken = token(32);
+		adminToken = token(32),
+		now = new Date(),
+		// in 12 Months
+		cookieExpires = new Date( now.getTime() + 1000 * 60 * 60 * 24 * 30 * 12 );
 
 	// create session
     // @todo check sessionToken collision
@@ -45,8 +48,16 @@ var createSessionRoute = function(req, res){
 	socketNamespace.initializeNamespace(socket, sessionToken);
 
 	// set-cookie
-	res.cookie('session-token', sessionToken, { signed: true });
-	res.cookie('admin-token', adminToken, { signed: true });
+	res.cookie('session-token', sessionToken, {
+		signed: true,
+		expires: cookieExpires,
+		path: '/' + sessionToken
+	});
+	res.cookie('admin-token', adminToken, {
+		signed: true,
+		expires: cookieExpires,
+		path: '/' + sessionToken
+	});
 
 	// redirect to active session 
 	res.redirect('/' + sessionToken);

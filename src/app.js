@@ -49,7 +49,7 @@ app.use(sessionStorage.getMiddleware());
 app.use(auth);
 app.use(routes);
 
-server = app.listen(config.port, config.domain, function () {
+server = app.listen(config.port, "0.0.0.0", function () {
   var host = server.address().address;
   var port = server.address().port;
   console.log('WhiteDesk listening at http://%s:%s', host, port);
