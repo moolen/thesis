@@ -2,7 +2,8 @@ var adapterInstance,
 	settings;
 
 var Adapter = function( type, options ){
-	this.adapter = new (require('./session-adapter-' + type + '.js'))(options);
+	var _adapterImplementation = require('./session-adapter-' + type + '.js');
+	this.adapter = new _adapterImplementation(options);
 	this.ensureImplementsInterface();
 };
 
@@ -11,6 +12,13 @@ Adapter.prototype.interface = [
 	'getData',
 	'set',
 	'setData',
+	'createSession',
+	'removeSession',
+	'addAnswer',
+	'hasAnswered',
+	'addQuestion',
+	'updateQuestion',
+	'removeQuestion',
 	'isAdmin',
 	'createSession'
 ];
@@ -60,7 +68,6 @@ var getMiddleware = function(){
 	if( !adapterInstance ){
 		initialize();
 	}
-
 	return function(req, res, next){
 		req.session = adapterInstance.adapter;
 		next();

@@ -29,13 +29,15 @@ var SessionMemoryAdapter = function( options ){
  * @param {mixed} val       [desired value]
  */
 SessionMemoryAdapter.prototype.set = function( sessionId, key, val ){
-	var session = this.get(sessionId);
-	if(!session){
-		throw "session does not exist";
-	}
+	return this.get(sessionId).then(function(session){
+		if(!session){
+			return Promise.reject("session does not exist");
+		}
 
-	session[key] = val;
-	return this;
+		session[key] = val;
+		return Promise.resolve(this);
+	});
+	
 };
 
 /**
@@ -44,9 +46,10 @@ SessionMemoryAdapter.prototype.set = function( sessionId, key, val ){
  * @return {Object}           [the session]
  */
 SessionMemoryAdapter.prototype.get = function(sessionId){
-	return _.find(global[this.sessionKey].sessions, function(sess){
+	var session = _.find(global[this.sessionKey].sessions, function(sess){
 		return sess.id === sessionId;
 	});
+	return Promise.resolve(session);
 };
 
 /**
@@ -57,13 +60,15 @@ SessionMemoryAdapter.prototype.get = function(sessionId){
  * @return {this}
  */
 SessionMemoryAdapter.prototype.setData = function( sessionId, key, data ){
-	var session = this.get(sessionId);
-	if(!session)
-		throw "session does not exist";
+	return this.get(sessionId).then(function(session){
+		if(!session){
+			return Promise.reject("session does not exist");
+		}
 
-	session.data[key] = data;
-
-	return this;
+		session.data[key] = data;
+		return Promise.resolve(data);
+	});
+	
 };
 
 /**
@@ -78,14 +83,14 @@ SessionMemoryAdapter.prototype.getData = function(sessionId, key){
 	});
 
 	if(!session){
-		throw "Session does not exist";
+		return Promise.reject("Session does not exist");
 	}
 
 	if(key){
-		return session.data[key];
+		return Promise.resolve(session.data[key]);
 	}
 
-	return session.data;
+	return Promise.resolve(session.data);
 };
 
 /**
@@ -100,10 +105,13 @@ SessionMemoryAdapter.prototype.createSession = function(sessionId, adminToken){
 		id: sessionId,
 		adminToken: adminToken,
 		users: 1,
-		data: {}
+		data: {
+			questions: [],
+			activities: []
+		}
 	});
 
-	return this;
+	return Promise.resolve(this);
 };
 
 /**
@@ -112,9 +120,9 @@ SessionMemoryAdapter.prototype.createSession = function(sessionId, adminToken){
  * @return {Object}    [the removed session]
  */
 SessionMemoryAdapter.prototype.removeSession = function(id){
-	return _.remove(global[this.sessionKey].sessions, function(session){
+	return Promise.resolve(_.remove(global[this.sessionKey].sessions, function(session){
 		return session.id === id;
-	});
+	}));
 };
 
 /**
@@ -124,11 +132,12 @@ SessionMemoryAdapter.prototype.removeSession = function(id){
  * @return {Boolean}            [if the admin is valid]
  */
 SessionMemoryAdapter.prototype.isAdmin = function(sessionId, adminToken){
-	var session = this.get(sessionId);
-	if( session && session.adminToken === adminToken ){
-		return true
-	}
-	return false;
+	return this.get(sessionId).then(function(session){
+		if( session && session.adminToken === adminToken ){
+			return Promise.resolve(true);
+		}
+		return Promise.resolve(false);
+	});
 };
 
 /**
@@ -139,22 +148,22 @@ SessionMemoryAdapter.prototype.isAdmin = function(sessionId, adminToken){
  * @return {Boolean}            [has answered or not]
  */
 SessionMemoryAdapter.prototype.hasAnswered = function(sessionId, questionId, userToken ){
-	var	questions = this.getData(sessionId, 'questions');
-
-	var question = _.find(questions, function(question){
-		return question.id === questionId;
-	});
-
-	if(question){
-		var hasAnswered = _.find(question.answered, function(answeredUser){
-			return answeredUser == userToken;
+	return this.getData(sessionId, 'questions').then(function(questions){
+		var question = _.find(questions, function(question){
+			return question.id === questionId;
 		});
 
-		return hasAnswered ? true : false;
+		if(question){
+			var hasAnswered = _.find(question.answered, function(answeredUser){
+				return answeredUser == userToken;
+			});
 
-	}else{
-		throw "Question does not exist";
-	}
+			return Promise.resolve(hasAnswered ? true : false);
+
+		}else{
+			return Promise.reject("Question does not exist");
+		}
+	});
 };
 
 /**
@@ -165,25 +174,25 @@ SessionMemoryAdapter.prototype.hasAnswered = function(sessionId, questionId, use
  * @param {boolean} answer     [if successful or not]
  */
 SessionMemoryAdapter.prototype.addAnswer = function(sessionId, questionId, userId, answer){
-	var	questions = this.getData(sessionId, 'questions');
+	return this.getData(sessionId, 'questions').then(function(questions){
+		var question = _.find(questions, function(question){
+			return question.id === questionId;
+		});
 
-	var question = _.find(questions, function(question){
-		return question.id === questionId;
+		if( question ){
+
+			question.answered = question.answered || [];
+			question.answered.push( userId );
+
+			question.answers = question.answers || [];
+			question.answers.push(answer);
+			return Promise.resolve(true);
+
+		}else{
+			console.log('addAnswer: Question does not exist.');
+			return Promise.resolve(false);
+		}
 	});
-
-	if( question ){
-
-		question.answered = question.answered || [];
-		question.answered.push( userId );
-
-		question.answers = question.answers || [];
-		question.answers.push(answer);
-		return true;
-
-	}else{
-		console.log('addAnswer: Question does not exist.');
-		return false;
-	}
 };
 
 /**
@@ -192,9 +201,11 @@ SessionMemoryAdapter.prototype.addAnswer = function(sessionId, questionId, userI
  * @param {void}
  */
 SessionMemoryAdapter.prototype.addQuestion = function(sessionId, question){
-	var data = this.getData(sessionId, 'questions') || [];
-	data.push(question);
-	this.setData(sessionId, 'questions', data);
+	var self = this;
+	return this.getData(sessionId, 'questions').then(function(data){
+		data.push(question);
+		return self.setData(sessionId, 'questions', data);
+	});
 };
 
 /**
@@ -204,17 +215,19 @@ SessionMemoryAdapter.prototype.addQuestion = function(sessionId, question){
  * @return {void}
  */
 SessionMemoryAdapter.prototype.updateQuestion = function(sessionId, question){
-	var data = this.getData(sessionId, 'questions') || [],
-		match = _.find(data, function(model){
+	var self = this;
+	return this.getData(sessionId, 'questions').then(function(data){
+		var match = _.find(data, function(model){
 			return model.id == question.id;
 		});
 
-	if(match){
-		// writable properties: answers, groups
-		match.answers = question.answers;
-		match.groups = question.groups;
-	}
-	this.setData(sessionId, 'questions', data);
+		if(match){
+			// writable properties: answers, groups
+			match.answers = question.answers;
+			match.groups = question.groups;
+		}
+		return self.setData(sessionId, 'questions', data);
+	});
 };
 
 /**
@@ -224,9 +237,10 @@ SessionMemoryAdapter.prototype.updateQuestion = function(sessionId, question){
  * @return {Object|undefined}          [returns removed question or undefined]
  */
 SessionMemoryAdapter.prototype.removeQuestion = function(sessionId, question){
-	var data = this.getData(sessionId, 'questions') || [];
-	return _.remove(data, function(model){
-		return model.id === question.id;
+	return this.getData(sessionId, 'questions').then(function(data){
+		return Promise.resolve(_.remove(data, function(model){
+			return model.id === question.id;
+		}));
 	});
 };
 
