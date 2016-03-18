@@ -18,7 +18,8 @@ module.exports = {
 	setOptions: function(type, options){
 		_settings = {
 			type: type,
-			options: options
+			port: options.port,
+			host: options.host
 		};
 		return this;
 	},
