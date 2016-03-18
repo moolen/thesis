@@ -1,18 +1,14 @@
 # Thesis
 
-This is going to be the Project for my Bachelor's Thesis. It will be an realtime audience-response system. I'm using node, express, browserify & ampersand.js, aswell as gulp for the build-process.
-
-Watch my quick demo on [YouTube](https://www.youtube.com/watch?v=BX8_fiTgHqM):
-
-[![White Desk demo](http://img.youtube.com/vi/BX8_fiTgHqM/0.jpg)](http://www.youtube.com/watch?v=BX8_fiTgHqM) 
+This is the Project of my Bachelor's Thesis. It is an realtime audience-response system. I'm using node, express, browserify & ampersand.js, aswell as gulp for the build-process.
 
 ## Prerequisites
 
-You need a reasonably recent version of node.js (~0.10.X) and npm. For the development setup you need gulp (`npm install gulp`).
+You need a reasonably recent version of node.js (~0.12.X), npm and you need gulp to build the frontend-assets (`npm install gulp`).
 
 ## Installation
 
-First, Clone the Repository: `git clone https://github.com/moolen/thesis.git`, copy `config-sample.js` to `config.js` and modify it if you need to. Install the dependencies with `npm install`. And you are ready to go.
+First, Clone the Repository: `git clone https://github.com/moolen/thesis.git`, copy `config-sample.js` to `config.js` and modify it to your needs. Install the dependencies with `npm install`. And you are ready to go.
 
 Run the app with `node app.js`, for development run `gulp watch` so the styles & js gets compiled on the fly.
 

@@ -3,12 +3,14 @@ var express = require('express'),
     config = require('./config.js'),
     cookieParser = require('cookie-parser'),
     auth = require('./lib/authentication.js'),
-    sessionStorage = require('./lib/session-adapter.js')
+    compress = require('compression'),
+    storageMiddleware = require('./lib/session-adapter.js')
       .setOptions(config.db.type, {
         host: config.db.host,
         port: config.db.port
       })
-      .initialize(),
+      .initialize()
+      .getMiddleware(),
     handlebars = require('express-handlebars'),
     less = require('express-less-middleware')(),
     i18n = require('./lib/i18n.js'),
@@ -41,11 +43,12 @@ var hbs = handlebars.create({
 app.engine('.hbs', hbs.engine);
 app.set('view engine', '.hbs');
 app.use(enableCORS);
+app.use(compress());
 app.use(express.static('public'));
 app.use(i18n.middleware);
 app.use(cookieParser(config.cookieSecret));
 app.use(less);
-app.use(sessionStorage.getMiddleware());
+app.use(storageMiddleware);
 app.use(auth);
 app.use(routes);
 
