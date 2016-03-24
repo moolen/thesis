@@ -36,6 +36,7 @@
     "locale": "0.0.20",
     "lodash": "^3.5.0",
     "material-design-lite": "^1.0.2",
+    "multer": "^1.1.0",
     "rethinkdb": "^2.0.0-1",
     "socket.io": "^1.4.4",
     "source-map": "^0.4.2",
