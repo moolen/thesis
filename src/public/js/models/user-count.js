@@ -3,9 +3,7 @@ var BaseModel = require('ampersand-model');
 module.exports = BaseModel.extend({
 	namespace: 'usercount',
 	props: {
-		count: 0,
-		foo: '',
-		bar: ''
+		count: 'number'
 	},
 	initialize: function(attributes, options){
 		this.socket = options.socket;
