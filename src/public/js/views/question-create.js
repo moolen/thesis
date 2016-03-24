@@ -25,7 +25,8 @@ var CreateQuestion = BaseView.extend({
         'click .add-option': 'addOption',
         'keydown .mc-answer': 'answerKeyUp',
         'click [data-trigger="create"]': 'save',
-        'click [data-trigger="abort"]': 'abort'
+        'click [data-trigger="abort"]': 'abort',
+        'change #file-input': 'prepareUpload'
     },
 
     initialize: function(options){
@@ -34,15 +35,23 @@ var CreateQuestion = BaseView.extend({
         app.router.navigate('question/new');
     },
 
-    updateQuestionType: function(){
+    updateModelState: function(){
         var val = $(this.el).find('[data-hook="type"]').val(),
             question = $(this.el).find('[data-hook="question"]').val(),
-            opts = this.getAcceptedOptions();
+            description = $(this.el).find('[data-hook="description"]').val();
         
         this.model.question = question;
+        this.model.description = description;
         this.model.type = val;
+    },
 
-        if( opts && opts.length === 0 && val === 'mc' ){
+    updateQuestionType: function(){
+        var type = $(this.el).find('[data-hook="type"]').val();
+
+        this.updateModelState();
+        var opts = this.getAcceptedOptions();
+        
+        if( opts && opts.length === 0 && type === 'mc' ){
             this.addOption();
         }
 
@@ -104,6 +113,7 @@ var CreateQuestion = BaseView.extend({
 
     save: function(){
         var question = $(this.el).find('[data-hook="question"]').val();
+        var description = $(this.el).find('[data-hook="description"]').val();
         // @todo find answers, remove duplicates and set em on the model
         var acceptedOptions = this.getAcceptedOptions();
         var type = $(this.el).find('[data-hook="type"]').val();
@@ -116,14 +126,22 @@ var CreateQuestion = BaseView.extend({
         if(question)
             this.model.question = question;
 
+        if(description)
+            this.model.description = description
+
         if(acceptedOptions)
             this.model.acceptedOptions = acceptedOptions;
 
+
         if( this.model.isValid() ){
-            this.collection.addModel( this.model );
-            app.trigger( app.events.NEW_QUESTION );
-            app.router.redirectTo('/');
-            this.remove();
+            var self = this;
+            this.model.uploadImage(function(){
+                self.collection.addModel( self.model );
+                self.undelegateEvents();
+                self.remove();
+                app.trigger( app.events.NEW_QUESTION );
+                app.router.redirectTo('/');
+            });
         }else{
             for( var key in this.model.validationError){
                 this.queryByHook(key)
@@ -131,6 +149,22 @@ var CreateQuestion = BaseView.extend({
             }
         }
 
+    },
+
+    prepareUpload: function(e){
+
+        if( e.target.files && e.target.files[0] ){
+            var imageFile = e.target.files[0]
+
+            // only allow images for now
+            if( imageFile.type.indexOf('image') != -1 ){
+                $(this.el).find('.file-path.validate').val(imageFile.name);
+                this.updateModelState();
+                this.model.image = imageFile;
+            }else{
+                alert('nur bilder sind erlaubt.');
+            }
+        }
     },
 
     abort: function(){

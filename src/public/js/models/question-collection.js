@@ -16,7 +16,7 @@ module.exports = BaseCollection.extend({
 		this.socket.on( this.namespace + ':change', function( collection ){
 			self.set(collection);
 			self.sort();
-            self.trigger('change');
+			self.trigger('change');
 		});
 		
 	},
@@ -28,7 +28,7 @@ module.exports = BaseCollection.extend({
 	},
 
 	addModel: function( model ){
-		this.socket.emit(this.namespace + ':add', model);
+		this.socket.emit(this.namespace + ':add', model.toJSON());
 		this.add(model);
 	}
 });

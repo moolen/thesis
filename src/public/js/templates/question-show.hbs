@@ -10,7 +10,18 @@
             {{/isNotCheckbox}}
             {{model.question}}
         </h3>
+        
+        
+        
+        <div class="row">
+            <div class="description col s12">{{model.description}}</div>
+        </div>
 
+        {{#if model.imageUrl}}
+            <div class="row">
+                <img class="question-image" src="{{model.imageUrl}}" />
+            </div>
+        {{/if}}
 
         {{#is this.model.hasAnswered false}}
 

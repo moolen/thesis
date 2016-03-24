@@ -1,4 +1,3 @@
-console.log(process.env);
 var express = require('express'),
     config = require('./config.js'),
     cookieParser = require('cookie-parser'),
@@ -49,7 +48,7 @@ app.use(i18n.middleware);
 app.use(cookieParser(config.cookieSecret));
 app.use(less);
 app.use(storageMiddleware);
-app.use(auth);
+app.use(auth.middleware);
 app.use(routes);
 
 server = app.listen(config.port, "0.0.0.0", function () {

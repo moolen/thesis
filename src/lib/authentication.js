@@ -4,7 +4,8 @@
  * - checks whether the session-token and admin-token exists and is valid
  * - sets req.isAdmin
  */
-module.exports = function(req, res, next){
+module.exports = {
+  middleware: function(req, res, next){
     
     var session = req.signedCookies['session-token'],
         admin = req.signedCookies['admin-token'];
@@ -16,4 +17,11 @@ module.exports = function(req, res, next){
         req.isAdmin = false;
         next();
     });
+  },
+  ensureAuthenticated: function(req, res, next){
+    if( req.isAdmin ){
+      return next();
+    }
+    res.status(401).json({ error: "not authenticated"});
+  }
 };

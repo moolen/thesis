@@ -66,9 +66,13 @@ var initializeNamespace = function( socket, token ){
             }
             session.updateQuestion(token, payload.model).then(function(){
                 session.getData(token, 'questions').then(function(data){
-                    callback();
                     namespace.emit('questions:change', data);
+                    callback();
+                }).catch(function(err){
+                    console.log('error getData', err);
                 });
+            }).catch(function(err){
+                console.log('error updateQuestion', err);
             });
         });
 

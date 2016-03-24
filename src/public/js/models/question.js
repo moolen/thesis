@@ -11,11 +11,15 @@ var QuestionModel = State.extend({
     props: {
         id: 'string',
         question: 'string',
+        description: 'string',
+        image: 'object',
+        imageUrl: 'string',
         type: 'string',
         createdAt: 'date',
         acceptedOptions: 'array',
         answers: 'array',
-        answered: 'array'
+        answered: 'array',
+        visible: 'boolean'
     },
 
     collections: {
@@ -255,6 +259,32 @@ var QuestionModel = State.extend({
             admin: app.config.adminToken,
             model: this.toJSON()
         }, callback);
+    },
+
+    uploadImage: function(callback){
+        if( this.image ){
+            var self = this;
+            var data = new FormData();
+            data.append('image', this.image);
+            $.ajax({
+                url: '/' + app.config.room + '/upload/image',
+                type: 'POST',
+                data: data,
+                cache: false,
+                dataType: 'json',
+                processData: false,
+                contentType: false,
+                success: function(data, status, xhr){
+                    if( data && data.path ){
+                        self.image = null
+                        self.imageUrl = data.path;
+                    }
+                    callback();
+                }
+            });
+        }else{
+            callback();
+        }
     },
 
     remove: function(){
