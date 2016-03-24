@@ -1,5 +1,5 @@
 node_modules/
 config.js
-public/js/build/*
-public/images
+src/public/js/build/*
+src/public/images
 rethinkdb_data/

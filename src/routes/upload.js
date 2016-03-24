@@ -5,10 +5,15 @@ var multer = require('multer'),
 
 
 var postHandler = function homeRoute(req, res){
-  var file = req.files.image
+  var file = req.file
+  
+  if(!file){
+    return res.status(400).json({ error: 'no file attached' });
+  }
+
   res.status(200).json({ path: file.path.replace('public', '') });
 };
 
 module.exports = function(router){
-  router.post('/:session/upload/image', ensureAuthenticated, upload, postHandler);
+  router.post('/:session/upload/image', ensureAuthenticated, upload.single('image'), postHandler);
 };
