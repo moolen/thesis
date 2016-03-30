@@ -7,10 +7,10 @@ module.exports = {
 			return _impl;
 		}
 		if( !_settings || !_settings.hasOwnProperty('type') ){
-			console.log("missing database settings", _settings);
+			console.log("missing storage settings", _settings);
 			return;
 		}
-		var adapterImplementation = require('./session-adapter-' + _settings.type + '.js');
+		var adapterImplementation = require('./storage-' + _settings.type + '.js');
 		_impl = new adapterImplementation(_settings);
 
 		return this;
@@ -28,7 +28,7 @@ module.exports = {
 			initialize();
 		}
 		return function(req, res, next){
-			req.session = _impl;
+			req.storage = _impl;
 			next();
 		};
 	},

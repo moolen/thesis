@@ -1,4 +1,4 @@
-var session = require('./session-adapter.js').getInstance(),
+var storage = require('./storage-adapter.js').getInstance(),
     bluebird = require('bluebird'),
     config = require('../config.js'),
     cookieParser = require('cookie-parser'),
@@ -13,7 +13,7 @@ var authenticateAdmin = function(sessionId, signedAdminCookie){
         decodeURIComponent(signedAdminCookie),
         config.cookieSecret
     );
-    return session.isAdmin(sessionId, adminToken);
+    return storage.isAdmin(sessionId, adminToken);
 };
 
 var initializeNamespace = function( socket, token ){
@@ -34,8 +34,8 @@ var initializeNamespace = function( socket, token ){
             authenticateAdmin(token, cfg.admin).then(function(isActuallyAdmin){
                 isAdmin = isActuallyAdmin;
                 bluebird.all(
-                    session.getData(token, 'questions'),
-                    session.getData(token, 'activities')
+                    storage.getData(token, 'questions'),
+                    storage.getData(token, 'activities')
                 ).then(function(questions, activities){
 
                     sock.emit('server:ready', {
@@ -52,8 +52,8 @@ var initializeNamespace = function( socket, token ){
             if( !isAdmin ){
                 return;
             }
-            session.addQuestion(token, model).then(function(){
-                session.getData(token, 'questions').then(function(data){
+            storage.addQuestion(token, model).then(function(){
+                storage.getData(token, 'questions').then(function(data){
                     namespace.emit( 'questions:change', data);
                 });
             });
@@ -64,8 +64,8 @@ var initializeNamespace = function( socket, token ){
             if( !isAdmin ){
                 return;
             }
-            session.updateQuestion(token, payload.model).then(function(){
-                session.getData(token, 'questions').then(function(data){
+            storage.updateQuestion(token, payload.model).then(function(){
+                storage.getData(token, 'questions').then(function(data){
                     namespace.emit('questions:change', data);
                     callback();
                 }).catch(function(err){
@@ -80,8 +80,8 @@ var initializeNamespace = function( socket, token ){
             if( !isAdmin ){
                 return;
             }
-            session.removeQuestion(token, payload.model).then(function(){
-                session.getData(token, 'questions').then(function(data){
+            storage.removeQuestion(token, payload.model).then(function(){
+                storage.getData(token, 'questions').then(function(data){
                     namespace.emit('questions:change', data);
                 });
             });
@@ -95,9 +95,9 @@ var initializeNamespace = function( socket, token ){
                 questionId = answerObject.question,
                 answer = answerObject.answer;
 
-            session.hasAnswered(token, questionId, answerObject.user).then(function(){
-                session.addAnswer(token, questionId, answerObject.user, answer).then(function(){
-                    session.getData(token, 'questions').then(function(data){
+            storage.hasAnswered(token, questionId, answerObject.user).then(function(){
+                storage.addAnswer(token, questionId, answerObject.user, answer).then(function(){
+                    storage.getData(token, 'questions').then(function(data){
                         namespace.emit( 'questions:change', data );
                     });
                 });

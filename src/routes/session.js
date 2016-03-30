@@ -7,7 +7,7 @@ var sessionRoute = function(req, res){
 	var	url = req.protocol + '://' + config.domain;
 
 	// fetch session from storage
-	req.session.get(req.params.session.toUpperCase()).then(function(session){
+	req.storage.get(req.params.session.toUpperCase()).then(function(session){
 		// case: session exists
 		if(session){
 			
@@ -43,7 +43,7 @@ var createSessionRoute = function(req, res){
 
 	// create session
     // @todo check sessionToken collision
-	req.session.createSession(sessionToken, adminToken);
+	req.storage.createSession(sessionToken, adminToken);
 
 	socketNamespace.initializeNamespace(socket, sessionToken);
 

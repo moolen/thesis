@@ -3,7 +3,7 @@ var express = require('express'),
     cookieParser = require('cookie-parser'),
     auth = require('./lib/authentication.js'),
     compress = require('compression'),
-    storageMiddleware = require('./lib/session-adapter.js')
+    storageMiddleware = require('./lib/storage-adapter.js')
       .setOptions(config.db.type, {
         host: config.db.host,
         port: config.db.port

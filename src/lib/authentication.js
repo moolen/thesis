@@ -10,7 +10,7 @@ module.exports = {
     var session = req.signedCookies['session-token'],
         admin = req.signedCookies['admin-token'];
 
-    req.session.isAdmin(session, admin).then(function(provenAdmin){
+    req.storage.isAdmin(session, admin).then(function(provenAdmin){
         req.isAdmin = provenAdmin;
         next();
     }).catch(function(e){
