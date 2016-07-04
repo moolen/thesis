@@ -12,14 +12,10 @@ First, Clone the Repository: `git clone https://github.com/moolen/thesis.git`, c
 
 Run the app with `node app.js`, for development run `gulp watch` so the styles & js gets compiled on the fly.
 
-Now you can point your browser to `localhost:3000` (or whatever you configured in your config.js).
+Now you can point your browser to `localhost:3000` (or whatever you configured in your config.js) to see that the page is rendering.
 
-### Known issues
+You should run the node app behind a reverse-proxy and add an virtual-host entry to your webserver configuration. The following example uses apache2.4 with mod_proxy and mod_proxy_wstunnel. The Application runs at whitedesk.local:80 and forwards the traffic to localhost:3000 (the node instance).
 
-#### Running behind Reverse-Proxy
-We're using Websockets and we have to proxy the request to the node-instance.
-He're is a sample configuration for Apache using `whitedesk.local` as our domain.
-Be sure to have the `mod_proxy` and `mod_proxy_wstunnel` modules enabled.
 
 ```
 <VirtualHost whitedesk.local:80>
@@ -41,3 +37,6 @@ Be sure to have the `mod_proxy` and `mod_proxy_wstunnel` modules enabled.
 
 </VirtualHost>
 ```
+
+### Troubleshooting
+If you cant get the app running please open an issue. The Websocket connection might not be working properly if you "speak" to the node instance directly. Please use an Proxy so that the app appears to be running on port 80
