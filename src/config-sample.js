@@ -1,6 +1,6 @@
 module.exports = {
   domain: '0.0.0.0',
-  port: 80,
+  port: 3000,
   cookieSecret: '<my-secret-token>',
   db: {
     type: 'rethinkdb',

@@ -1,7 +1,7 @@
 web:
   build: .
   ports:
-   - "3000:1312"
+   - "4000:3000"
   links:
    - rethinkdb
 rethinkdb:
